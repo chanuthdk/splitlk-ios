@@ -1,0 +1,658 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		C078E246308F81B40047E30F /* SplitLKApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C078E245308F81B40047E30F /* SplitLKApp.swift */; };
+		C078E24C308F81B50047E30F /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = C078E24B308F81B50047E30F /* Persistence.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		C078E255308F81B50047E30F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C078E23A308F81B40047E30F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C078E241308F81B40047E30F;
+			remoteInfo = SplitLK;
+		};
+		C078E25F308F81B50047E30F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C078E23A308F81B40047E30F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C078E241308F81B40047E30F;
+			remoteInfo = SplitLK;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		C078E242308F81B40047E30F /* SplitLK.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SplitLK.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C078E245308F81B40047E30F /* SplitLKApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitLKApp.swift; sourceTree = "<group>"; };
+		C078E24B308F81B50047E30F /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
+		C078E254308F81B50047E30F /* SplitLKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SplitLKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C078E25E308F81B50047E30F /* SplitLKUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SplitLKUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		C078E244308F81B40047E30F /* SplitLK */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SplitLK;
+			sourceTree = "<group>";
+		};
+		C078E257308F81B50047E30F /* SplitLKTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SplitLKTests;
+			sourceTree = "<group>";
+		};
+		C078E261308F81B50047E30F /* SplitLKUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SplitLKUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C078E23F308F81B40047E30F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C078E251308F81B50047E30F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C078E25B308F81B50047E30F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		C078E239308F81B40047E30F = {
+			isa = PBXGroup;
+			children = (
+				C078E277308F84860047E30F /* Resources */,
+				C078E276308F84710047E30F /* Services */,
+				C078E275308F845B0047E30F /* Views */,
+				C078E274308F842D0047E30F /* ViewModels */,
+				C078E273308F84140047E30F /* Models */,
+				C078E271308F83D30047E30F /* App */,
+				C078E244308F81B40047E30F /* SplitLK */,
+				C078E257308F81B50047E30F /* SplitLKTests */,
+				C078E261308F81B50047E30F /* SplitLKUITests */,
+				C078E243308F81B40047E30F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		C078E243308F81B40047E30F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C078E242308F81B40047E30F /* SplitLK.app */,
+				C078E254308F81B50047E30F /* SplitLKTests.xctest */,
+				C078E25E308F81B50047E30F /* SplitLKUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C078E271308F83D30047E30F /* App */ = {
+			isa = PBXGroup;
+			children = (
+				C078E245308F81B40047E30F /* SplitLKApp.swift */,
+				C078E24B308F81B50047E30F /* Persistence.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		C078E273308F84140047E30F /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		C078E274308F842D0047E30F /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		C078E275308F845B0047E30F /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				C078E27A308F84E50047E30F /* Shared */,
+				C078E279308F84CB0047E30F /* Bills */,
+				C078E278308F84B90047E30F /* Groups */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		C078E276308F84710047E30F /* Services */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		C078E277308F84860047E30F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		C078E278308F84B90047E30F /* Groups */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Groups;
+			sourceTree = "<group>";
+		};
+		C078E279308F84CB0047E30F /* Bills */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Bills;
+			sourceTree = "<group>";
+		};
+		C078E27A308F84E50047E30F /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		C078E241308F81B40047E30F /* SplitLK */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C078E268308F81B50047E30F /* Build configuration list for PBXNativeTarget "SplitLK" */;
+			buildPhases = (
+				C078E23E308F81B40047E30F /* Sources */,
+				C078E23F308F81B40047E30F /* Frameworks */,
+				C078E240308F81B40047E30F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				C078E244308F81B40047E30F /* SplitLK */,
+			);
+			name = SplitLK;
+			packageProductDependencies = (
+			);
+			productName = SplitLK;
+			productReference = C078E242308F81B40047E30F /* SplitLK.app */;
+			productType = "com.apple.product-type.application";
+		};
+		C078E253308F81B50047E30F /* SplitLKTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C078E26B308F81B50047E30F /* Build configuration list for PBXNativeTarget "SplitLKTests" */;
+			buildPhases = (
+				C078E250308F81B50047E30F /* Sources */,
+				C078E251308F81B50047E30F /* Frameworks */,
+				C078E252308F81B50047E30F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C078E256308F81B50047E30F /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				C078E257308F81B50047E30F /* SplitLKTests */,
+			);
+			name = SplitLKTests;
+			packageProductDependencies = (
+			);
+			productName = SplitLKTests;
+			productReference = C078E254308F81B50047E30F /* SplitLKTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		C078E25D308F81B50047E30F /* SplitLKUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C078E26E308F81B50047E30F /* Build configuration list for PBXNativeTarget "SplitLKUITests" */;
+			buildPhases = (
+				C078E25A308F81B50047E30F /* Sources */,
+				C078E25B308F81B50047E30F /* Frameworks */,
+				C078E25C308F81B50047E30F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C078E260308F81B50047E30F /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				C078E261308F81B50047E30F /* SplitLKUITests */,
+			);
+			name = SplitLKUITests;
+			packageProductDependencies = (
+			);
+			productName = SplitLKUITests;
+			productReference = C078E25E308F81B50047E30F /* SplitLKUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C078E23A308F81B40047E30F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2620;
+				LastUpgradeCheck = 2620;
+				TargetAttributes = {
+					C078E241308F81B40047E30F = {
+						CreatedOnToolsVersion = 26.2;
+					};
+					C078E253308F81B50047E30F = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = C078E241308F81B40047E30F;
+					};
+					C078E25D308F81B50047E30F = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = C078E241308F81B40047E30F;
+					};
+				};
+			};
+			buildConfigurationList = C078E23D308F81B40047E30F /* Build configuration list for PBXProject "SplitLK" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = C078E239308F81B40047E30F;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = C078E243308F81B40047E30F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C078E241308F81B40047E30F /* SplitLK */,
+				C078E253308F81B50047E30F /* SplitLKTests */,
+				C078E25D308F81B50047E30F /* SplitLKUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C078E240308F81B40047E30F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C078E252308F81B50047E30F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C078E25C308F81B50047E30F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C078E23E308F81B40047E30F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C078E24C308F81B50047E30F /* Persistence.swift in Sources */,
+				C078E246308F81B40047E30F /* SplitLKApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C078E250308F81B50047E30F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C078E25A308F81B50047E30F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		C078E256308F81B50047E30F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C078E241308F81B40047E30F /* SplitLK */;
+			targetProxy = C078E255308F81B50047E30F /* PBXContainerItemProxy */;
+		};
+		C078E260308F81B50047E30F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C078E241308F81B40047E30F /* SplitLK */;
+			targetProxy = C078E25F308F81B50047E30F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		C078E266308F81B50047E30F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		C078E267308F81B50047E30F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		C078E269308F81B50047E30F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chanuth.SplitLK;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C078E26A308F81B50047E30F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chanuth.SplitLK;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		C078E26C308F81B50047E30F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chanuth.SplitLKTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SplitLK.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SplitLK";
+			};
+			name = Debug;
+		};
+		C078E26D308F81B50047E30F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chanuth.SplitLKTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SplitLK.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SplitLK";
+			};
+			name = Release;
+		};
+		C078E26F308F81B50047E30F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chanuth.SplitLKUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SplitLK;
+			};
+			name = Debug;
+		};
+		C078E270308F81B50047E30F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chanuth.SplitLKUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SplitLK;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C078E23D308F81B40047E30F /* Build configuration list for PBXProject "SplitLK" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C078E266308F81B50047E30F /* Debug */,
+				C078E267308F81B50047E30F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C078E268308F81B50047E30F /* Build configuration list for PBXNativeTarget "SplitLK" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C078E269308F81B50047E30F /* Debug */,
+				C078E26A308F81B50047E30F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C078E26B308F81B50047E30F /* Build configuration list for PBXNativeTarget "SplitLKTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C078E26C308F81B50047E30F /* Debug */,
+				C078E26D308F81B50047E30F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C078E26E308F81B50047E30F /* Build configuration list for PBXNativeTarget "SplitLKUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C078E26F308F81B50047E30F /* Debug */,
+				C078E270308F81B50047E30F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C078E23A308F81B40047E30F /* Project object */;
+}
