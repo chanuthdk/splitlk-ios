@@ -6,11 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		C078E246308F81B40047E30F /* SplitLKApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C078E245308F81B40047E30F /* SplitLKApp.swift */; };
-		C078E24C308F81B50047E30F /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = C078E24B308F81B50047E30F /* Persistence.swift */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXContainerItemProxy section */
 		C078E255308F81B50047E30F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -30,8 +25,6 @@
 
 /* Begin PBXFileReference section */
 		C078E242308F81B40047E30F /* SplitLK.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SplitLK.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		C078E245308F81B40047E30F /* SplitLKApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitLKApp.swift; sourceTree = "<group>"; };
-		C078E24B308F81B50047E30F /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		C078E254308F81B50047E30F /* SplitLKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SplitLKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C078E25E308F81B50047E30F /* SplitLKUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SplitLKUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -82,12 +75,6 @@
 		C078E239308F81B40047E30F = {
 			isa = PBXGroup;
 			children = (
-				C078E277308F84860047E30F /* Resources */,
-				C078E276308F84710047E30F /* Services */,
-				C078E275308F845B0047E30F /* Views */,
-				C078E274308F842D0047E30F /* ViewModels */,
-				C078E273308F84140047E30F /* Models */,
-				C078E271308F83D30047E30F /* App */,
 				C078E244308F81B40047E30F /* SplitLK */,
 				C078E257308F81B50047E30F /* SplitLKTests */,
 				C078E261308F81B50047E30F /* SplitLKUITests */,
@@ -103,74 +90,6 @@
 				C078E25E308F81B50047E30F /* SplitLKUITests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		C078E271308F83D30047E30F /* App */ = {
-			isa = PBXGroup;
-			children = (
-				C078E245308F81B40047E30F /* SplitLKApp.swift */,
-				C078E24B308F81B50047E30F /* Persistence.swift */,
-			);
-			path = App;
-			sourceTree = "<group>";
-		};
-		C078E273308F84140047E30F /* Models */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
-		C078E274308F842D0047E30F /* ViewModels */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = ViewModels;
-			sourceTree = "<group>";
-		};
-		C078E275308F845B0047E30F /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				C078E27A308F84E50047E30F /* Shared */,
-				C078E279308F84CB0047E30F /* Bills */,
-				C078E278308F84B90047E30F /* Groups */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		C078E276308F84710047E30F /* Services */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Services;
-			sourceTree = "<group>";
-		};
-		C078E277308F84860047E30F /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Resources;
-			sourceTree = "<group>";
-		};
-		C078E278308F84B90047E30F /* Groups */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Groups;
-			sourceTree = "<group>";
-		};
-		C078E279308F84CB0047E30F /* Bills */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Bills;
-			sourceTree = "<group>";
-		};
-		C078E27A308F84E50047E30F /* Shared */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Shared;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -317,8 +236,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C078E24C308F81B50047E30F /* Persistence.swift in Sources */,
-				C078E246308F81B40047E30F /* SplitLKApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
