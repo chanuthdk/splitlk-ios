@@ -56,3 +56,11 @@ extension CDBillShare {
 extension CDSettlement {
     var settlementAmount: Decimal { amount?.decimalValue ?? 0 }
 }
+
+extension CDGroup {
+    func member(with id: UUID) -> CDMember? {
+        memberList.first { $0.memberID == id }
+    }
+
+    var me: CDMember? { memberList.first { $0.isMe } }
+}

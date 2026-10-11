@@ -45,7 +45,7 @@ struct GroupsView: View {
             Section("Your Groups") {
                 ForEach(groups) { group in
                     NavigationLink {
-                        Text(group.displayName)   // replaced by GroupDetailView next
+                        GroupDetailView(group: group)
                     } label: {
                         GroupRow(group: group)
                     }
