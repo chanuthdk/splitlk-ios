@@ -25,6 +25,39 @@ enum Money {
         }
     }
 
+    /// Allocates an amount across weights so the parts sum exactly to the original.
+    /// Uses the largest-remainder method: everyone gets their floor share, then
+    /// leftover cents go to whoever was rounded down hardest.
+    static func allocate(_ amount: Decimal, proportionalTo weights: [Decimal]) -> [Decimal] {
+        let totalWeight = weights.reduce(0, +)
+        guard !weights.isEmpty else { return [] }
+        guard totalWeight > 0 else { return divide(amount, into: weights.count) }
+
+        let totalCents = NSDecimalNumber(decimal: round(amount) * 100).intValue
+
+        var exact: [Double] = []
+        for weight in weights {
+            let ratio = NSDecimalNumber(decimal: weight / totalWeight).doubleValue
+            exact.append(Double(totalCents) * ratio)
+        }
+
+        var cents = exact.map { Int($0.rounded(.down)) }
+        var remaining = totalCents - cents.reduce(0, +)
+
+        let order = exact.indices.sorted {
+            (exact[$0] - Double(cents[$0])) > (exact[$1] - Double(cents[$1]))
+        }
+
+        var index = 0
+        while remaining > 0 && !order.isEmpty {
+            cents[order[index % order.count]] += 1
+            remaining -= 1
+            index += 1
+        }
+
+        return cents.map { Decimal($0) / 100 }
+    }
+    
     static func format(_ amount: Decimal, currencyCode: String = "LKR") -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
