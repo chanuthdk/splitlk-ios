@@ -7,6 +7,7 @@ struct GroupDetailView: View {
 
     @State private var tab: Tab = .bills
     @State private var showingSettleUp = false
+    @State private var showingAddBill = false
 
     enum Tab: String, CaseIterable, Identifiable {
         case bills, balances
@@ -33,7 +34,7 @@ struct GroupDetailView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    // Add Bill flow comes in session 2
+                    showingAddBill = true
                 } label: {
                     Image(systemName: "plus")
                 }
@@ -43,6 +44,11 @@ struct GroupDetailView: View {
         .sheet(isPresented: $showingSettleUp) {
             NavigationStack {
                 SettleUpView(group: group)
+            }
+        }
+        .sheet(isPresented: $showingAddBill) {
+            NavigationStack {
+                AddBillView(group: group)
             }
         }
     }
