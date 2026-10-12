@@ -50,6 +50,7 @@ struct SettleUpView: View {
 
         guard let from = group.member(with: transfer.from),
               let to = group.member(with: transfer.to) else { return }
+        guard transfer.amount > 0 else { return }
         let settlement = CDSettlement(context: context)
         settlement.id = UUID()
         settlement.amount = NSDecimalNumber(decimal: transfer.amount)

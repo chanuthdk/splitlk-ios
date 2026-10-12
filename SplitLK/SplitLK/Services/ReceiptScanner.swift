@@ -68,6 +68,11 @@ enum ReceiptScanner {
             return nil   // no document edge found, carry on with the original
         }
 
+        guard isPlausibleDocument(observation) else {
+            print("document quad rejected, using original image")
+            return nil
+        }
+
         let input = CIImage(cgImage: cgImage)
         let size = input.extent.size
 
@@ -83,6 +88,36 @@ enum ReceiptScanner {
         filter.setValue(CIVector(cgPoint: denormalise(observation.bottomRight)), forKey: "inputBottomRight")
 
         return filter.outputImage
+    }
+
+    /// Document detection sometimes latches onto a block inside the receipt
+    /// rather than its outline. Correcting to that quad crops most of the bill
+    /// away and shears what remains, which pushes the amount column out of line
+    /// with the item names. An implausible quad is rejected and the original
+    /// image is recognised instead, so a bad detection degrades to no
+    /// correction rather than to a ruined scan.
+    private static func isPlausibleDocument(_ observation: VNRectangleObservation) -> Bool {
+        guard observation.confidence >= 0.5 else { return false }
+
+        // Shoelace area of the quad, in normalised coordinates.
+        let corners = [observation.topLeft, observation.topRight,
+                       observation.bottomRight, observation.bottomLeft]
+        var area: CGFloat = 0
+        for index in corners.indices {
+            let current = corners[index]
+            let next = corners[(index + 1) % corners.count]
+            area += current.x * next.y - next.x * current.y
+        }
+        guard abs(area) / 2 > 0.35 else { return false }
+
+        // Opposite edges should be roughly parallel. A heavily skewed quad
+        // shears the page, which is what knocks the columns out of alignment.
+        let topSkew = abs(observation.topLeft.y - observation.topRight.y)
+        let bottomSkew = abs(observation.bottomLeft.y - observation.bottomRight.y)
+        let leftSkew = abs(observation.topLeft.x - observation.bottomLeft.x)
+        let rightSkew = abs(observation.topRight.x - observation.bottomRight.x)
+
+        return max(topSkew, bottomSkew) < 0.15 && max(leftSkew, rightSkew) < 0.15
     }
 
     // MARK: - Step 2: text recognition
@@ -117,15 +152,21 @@ enum ReceiptScanner {
         guard let observation = request.results?.first as? VNFeaturePrintObservation else {
             return nil
         }
-        return observation.data
+
+        // The observation is archived whole rather than storing its raw `data`,
+        // because the fingerprint cannot be rebuilt from those bytes alone.
+        return try? NSKeyedArchiver.archivedData(withRootObject: observation,
+                                                 requiringSecureCoding: true)
     }
 
-    /// Distance between two fingerprints. Smaller means more alike.
+    /// Distance between two stored fingerprints. Smaller means more alike.
     static func distance(_ a: Data, _ b: Data) -> Float? {
-        let first = VNFeaturePrintObservation()
-        let second = VNFeaturePrintObservation()
-        guard first.setValue(a, forKey: "data") == () else { return nil }
-        _ = second.setValue(b, forKey: "data")
+        guard let first = try? NSKeyedUnarchiver.unarchivedObject(
+                ofClass: VNFeaturePrintObservation.self, from: a),
+              let second = try? NSKeyedUnarchiver.unarchivedObject(
+                ofClass: VNFeaturePrintObservation.self, from: b) else {
+            return nil
+        }
 
         var result: Float = 0
         do {

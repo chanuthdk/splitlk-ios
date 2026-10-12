@@ -8,8 +8,11 @@ struct AddBillChooser: View {
     @State private var path: [Route] = []
     @State private var prefilled: BillEditorViewModel?
 
-    enum Route: Hashable { case scan, manual }
-
+    enum Route: Hashable {
+        case scan
+        case manual(UUID)   // identity so SwiftUI rebuilds per scan
+    }
+    
     var body: some View {
         NavigationStack(path: $path) {
             VStack(spacing: 16) {
@@ -22,7 +25,7 @@ struct AddBillChooser: View {
                 optionCard(title: "Enter Manually",
                            subtitle: "Type the bill yourself",
                            systemImage: "keyboard") {
-                    path.append(.manual)
+                    path.append(.manual(UUID()))
                 }
 
                 Spacer()
@@ -42,7 +45,7 @@ struct AddBillChooser: View {
                         let model = BillEditorViewModel(group: group)
                         model.apply(parsed, scan: scan)
                         prefilled = model
-                        path = [.manual]
+                        path.append(.manual(UUID()))
                     }
                 case .manual:
                     AddBillView(group: group, prefilled: prefilled)
