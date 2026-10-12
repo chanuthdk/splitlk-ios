@@ -9,7 +9,7 @@ struct ContentView: View {
             Text("Insights")
                 .tabItem { Label("Insights", systemImage: "chart.pie.fill") }
 
-            Text("Settings")
+            SettingsView()
                 .tabItem { Label("Settings", systemImage: "gearshape.fill") }
         }
     }
