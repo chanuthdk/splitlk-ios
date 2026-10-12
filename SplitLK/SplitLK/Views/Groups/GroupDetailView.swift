@@ -47,9 +47,7 @@ struct GroupDetailView: View {
             }
         }
         .sheet(isPresented: $showingAddBill) {
-            NavigationStack {
-                AddBillView(group: group)
-            }
+            AddBillChooser(group: group)
         }
     }
 

@@ -23,6 +23,11 @@ final class BillEditorViewModel {
     var serviceCharge: Decimal = 0
     var tax: Decimal = 0
     var mode: SplitMode = .byItem
+    var scannedTotal: Decimal?
+    var reconciles: Bool = true
+    var receiptImage: Data?
+    var featurePrint: Data?
+    var rawOCRText: String?
 
     let group: CDGroup
 
@@ -105,6 +110,9 @@ final class BillEditorViewModel {
         bill.tax = NSDecimalNumber(decimal: tax)
         bill.subtotal = NSDecimalNumber(decimal: itemsSubtotal)
         bill.total = NSDecimalNumber(decimal: total)
+        bill.receiptImage = receiptImage
+        bill.featurePrint = featurePrint
+        bill.rawOCRText = rawOCRText
 
         for draft in items {
             let item = CDItem(context: context)
@@ -127,5 +135,22 @@ final class BillEditorViewModel {
 
         try context.save()
         return bill
+    }
+    
+    /// Fills the draft from a scanned receipt. Everything stays editable,
+    /// so a misread line never blocks the user.
+    func apply(_ parsed: ReceiptParser.ParsedReceipt, scan: ReceiptScanner.ScanResult) {
+        if let merchant = parsed.merchant, !merchant.isEmpty {
+            self.merchant = merchant
+        }
+        items = parsed.items.map { parsedItem in
+            DraftItem(name: parsedItem.name, amount: parsedItem.amount)
+        }
+        serviceCharge = parsed.serviceCharge ?? 0
+        tax = parsed.tax ?? 0
+        scannedTotal = parsed.total
+        reconciles = parsed.reconciles
+        receiptImage = scan.correctedImage.jpegData(compressionQuality: 0.7)
+        featurePrint = scan.featurePrint
     }
 }

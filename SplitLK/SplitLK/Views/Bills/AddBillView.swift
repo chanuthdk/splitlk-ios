@@ -8,11 +8,19 @@ struct AddBillView: View {
     @State private var model: BillEditorViewModel
     @State private var saveError: String?
 
-    init(group: CDGroup) {
-        _model = State(initialValue: BillEditorViewModel(group: group))
+    init(group: CDGroup, prefilled: BillEditorViewModel? = nil) {
+        _model = State(initialValue: prefilled ?? BillEditorViewModel(group: group))
     }
 
     var body: some View {
+        if !model.reconciles, let scanned = model.scannedTotal {
+            Section {
+                Label("Items total \(Money.format(model.total)) but the receipt shows \(Money.format(scanned)). Check for missing or misread items.",
+                      systemImage: "exclamationmark.triangle.fill")
+                    .font(.footnote)
+                    .foregroundStyle(.orange)
+            }
+        }
         Form {
             detailsSection
             itemsSection
