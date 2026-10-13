@@ -7,12 +7,15 @@ struct AddBillChooser: View {
 
     @State private var path: [Route] = []
     @State private var prefilled: BillEditorViewModel?
+    @State private var duplicate: DuplicateDetector.Match?
+    @State private var scannedImage: UIImage?
 
     enum Route: Hashable {
         case scan
-        case manual(UUID)   // identity so SwiftUI rebuilds per scan
+        case duplicate(UUID)   // identity so a second scan rebuilds the screen
+        case manual(UUID)
     }
-    
+
     var body: some View {
         NavigationStack(path: $path) {
             VStack(spacing: 16) {
@@ -25,6 +28,7 @@ struct AddBillChooser: View {
                 optionCard(title: "Enter Manually",
                            subtitle: "Type the bill yourself",
                            systemImage: "keyboard") {
+                    prefilled = nil
                     path.append(.manual(UUID()))
                 }
 
@@ -42,17 +46,49 @@ struct AddBillChooser: View {
                 switch route {
                 case .scan:
                     ScanReceiptView(group: group) { scan, parsed in
-                        let model = BillEditorViewModel(group: group)
-                        model.apply(parsed, scan: scan)
-                        prefilled = model
-                        path.append(.manual(UUID()))
+                        handleScan(scan, parsed)
                     }
+
+                case .duplicate:
+                    if let duplicate {
+                        DuplicateWarningView(
+                            match: duplicate,
+                            newImage: scannedImage,
+                            onContinue: { path.append(.manual(UUID())) },
+                            onCancel: { dismiss() }
+                        )
+                        .navigationBarBackButtonHidden()
+                    }
+
                 case .manual:
                     AddBillView(group: group, prefilled: prefilled)
                 }
             }
         }
     }
+
+    // MARK: - Scan handling
+
+    /// A scanned receipt is checked against the group's existing bills before
+    /// the user starts assigning it, so a duplicate claim is caught at the
+    /// point it would be entered rather than after the balances have moved.
+    private func handleScan(_ scan: ReceiptScanner.ScanResult,
+                            _ parsed: ReceiptParser.ParsedReceipt) {
+        let model = BillEditorViewModel(group: group)
+        model.apply(parsed, scan: scan)
+        prefilled = model
+        scannedImage = scan.correctedImage
+
+        if let match = DuplicateDetector.findDuplicate(of: scan.featurePrint, in: group) {
+            duplicate = match
+            path.append(.duplicate(UUID()))
+        } else {
+            duplicate = nil
+            path.append(.manual(UUID()))
+        }
+    }
+
+    // MARK: - Pieces
 
     private func optionCard(title: String,
                             subtitle: String,
@@ -77,5 +113,6 @@ struct AddBillChooser: View {
             .background(RoundedRectangle(cornerRadius: 14).fill(Color(.secondarySystemGroupedBackground)))
         }
         .buttonStyle(.plain)
+        .accessibilityLabel("\(title). \(subtitle)")
     }
 }
