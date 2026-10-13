@@ -7,6 +7,7 @@ struct SettleUpView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var transfers: [Transfer] = []
+    @State private var saveError: String?
 
     var body: some View {
         List {
@@ -36,21 +37,23 @@ struct SettleUpView: View {
             }
         }
         .onAppear { refresh() }
+        .alert("Couldn't record that payment", isPresented: .constant(saveError != nil)) {
+            Button("OK") { saveError = nil }
+        } message: {
+            Text(saveError ?? "")
+        }
     }
 
     private func refresh() {
         transfers = BalanceService.transfers(for: group)
     }
 
-    /// Stores the payment so it offsets the balances from now on.    private func record(_ transfer: Transfer) {
     /// Stores the payment so it offsets the balances from now on.
     private func record(_ transfer: Transfer) {
-        print("looking for \(transfer.from) and \(transfer.to)")
-        print("members: \(group.memberList.map { ($0.displayName, $0.id as Any) })")
-
-        guard let from = group.member(with: transfer.from),
+        guard transfer.amount > 0,
+              let from = group.member(with: transfer.from),
               let to = group.member(with: transfer.to) else { return }
-        guard transfer.amount > 0 else { return }
+
         let settlement = CDSettlement(context: context)
         settlement.id = UUID()
         settlement.amount = NSDecimalNumber(decimal: transfer.amount)
@@ -61,11 +64,12 @@ struct SettleUpView: View {
 
         do {
             try context.save()
-            print("Settlements now: \(group.settlementList.count)")
             refresh()
+            // Nothing left to settle, so close rather than leaving an empty sheet.
+            if transfers.isEmpty { dismiss() }
         } catch {
-            print("Settlement save failed: \(error)")
             context.rollback()
+            saveError = error.localizedDescription
         }
     }
 }

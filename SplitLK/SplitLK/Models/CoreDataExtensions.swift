@@ -31,8 +31,13 @@ extension CDBill {
     var serviceChargeAmount: Decimal { serviceCharge?.decimalValue ?? 0 }
     var taxAmount: Decimal { tax?.decimalValue ?? 0 }
     var splitMode: SplitMode { SplitMode(rawValue: splitModeRaw ?? "") ?? .equally }
+    /// Items keep the order they were printed on the receipt, which is what
+    /// the user sees when checking a scan against the paper bill.
     var itemList: [CDItem] {
-        (items as? Set<CDItem> ?? []).sorted { $0.displayName < $1.displayName }
+        (items as? Set<CDItem> ?? []).sorted {
+            $0.position == $1.position ? $0.displayName < $1.displayName
+                                       : $0.position < $1.position
+        }
     }
     var customShareList: [CDBillShare] {
         Array(customShares as? Set<CDBillShare> ?? [])

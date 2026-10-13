@@ -69,8 +69,7 @@ enum ReceiptScanner {
         }
 
         guard isPlausibleDocument(observation) else {
-            print("document quad rejected, using original image")
-            return nil
+            return nil   // implausible quad, recognise the original instead
         }
 
         let input = CIImage(cgImage: cgImage)

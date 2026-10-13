@@ -114,13 +114,14 @@ final class BillEditorViewModel {
         bill.featurePrint = featurePrint
         bill.rawOCRText = rawOCRText
 
-        for draft in items {
+        for (index, draft) in items.enumerated() {
             let item = CDItem(context: context)
             item.id = UUID()
             item.name = draft.name.isEmpty ? "Item" : draft.name
             item.amount = NSDecimalNumber(decimal: draft.amount)
             item.categoryRaw = draft.category.rawValue
             item.wasEdited = false
+            item.position = Int16(index)
             item.bill = bill
 
             for assignee in draft.assignees {
@@ -152,5 +153,6 @@ final class BillEditorViewModel {
         reconciles = parsed.reconciles
         receiptImage = scan.correctedImage.jpegData(compressionQuality: 0.7)
         featurePrint = scan.featurePrint
+        rawOCRText = scan.rawText
     }
 }

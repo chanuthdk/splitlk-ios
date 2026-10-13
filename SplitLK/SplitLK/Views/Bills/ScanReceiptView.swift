@@ -106,14 +106,10 @@ struct ScanReceiptView: View {
             let result = try await ReceiptScanner.scan(image)
             let parsed = ReceiptParser.parse(lines: result.lines)
 
-            print("OCR lines: \(result.lines.count)")
-            print("parsed items: \(parsed.items.map { ($0.name, $0.amount) })")
-            print("total: \(String(describing: parsed.total))")
             guard !parsed.items.isEmpty else {
                 stage = .failed("No items could be read. Try a sharper photo, or enter the bill manually.")
                 return
             }
-            print("rows: \(ReceiptParser.groupIntoRows(result.lines).map(\.text))")
 
             preview = result.correctedImage
             onParsed(result, parsed)

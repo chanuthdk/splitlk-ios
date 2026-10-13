@@ -75,13 +75,15 @@ enum SeedData {
         bill.tax = 0
 
         var subtotal: Decimal = 0
-        for (name, amount, category, assignees) in items {
+        for (index, entry) in items.enumerated() {
+            let (name, amount, category, assignees) = entry
             let item = CDItem(context: context)
             item.id = UUID()
             item.name = name
             item.amount = NSDecimalNumber(decimal: amount)
             item.categoryRaw = category.rawValue
             item.wasEdited = false
+            item.position = Int16(index)
             item.bill = bill
             subtotal += amount
 
