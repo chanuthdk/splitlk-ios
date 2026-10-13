@@ -64,10 +64,26 @@ struct GroupDetailView: View {
             } else {
                 ForEach(group.billList, id: \.billID) { bill in
                     BillRow(bill: bill)
+                        .swipeActions(edge: .trailing) {
+                            Button("Delete", systemImage: "trash", role: .destructive) {
+                                delete(bill)
+                            }
+                        }
                 }
             }
         }
         .listStyle(.plain)
+    }
+
+    /// Deleting a bill cascades to its items and shares through the model's
+    /// delete rules, so the balances recalculate with no manual cleanup.
+    private func delete(_ bill: CDBill) {
+        context.delete(bill)
+        do {
+            try context.save()
+        } catch {
+            context.rollback()
+        }
     }
 
     // MARK: - Balances

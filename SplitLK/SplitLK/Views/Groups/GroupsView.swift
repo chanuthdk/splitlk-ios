@@ -10,33 +10,49 @@ struct GroupsView: View {
         animation: .default
     ) private var groups: FetchedResults<CDGroup>
 
+    @State private var showingCreateGroup = false
+    @State private var selection: CDGroup?
+
     var body: some View {
-        NavigationStack {
-            Group {
-                if groups.isEmpty {
-                    emptyState
-                } else {
-                    groupList
-                }
+        // A split view gives iPad a persistent sidebar beside the open group,
+        // and collapses to a plain push navigation on iPhone, so both layouts
+        // come from one definition rather than two parallel view trees.
+        NavigationSplitView {
+            sidebar
+        } detail: {
+            detail
+        }
+        .navigationSplitViewStyle(.balanced)
+        .sheet(isPresented: $showingCreateGroup) {
+            CreateGroupView()
+        }
+    }
+
+    // MARK: - Sidebar
+
+    private var sidebar: some View {
+        Group {
+            if groups.isEmpty {
+                emptyState
+            } else {
+                groupList
             }
-            .navigationTitle("Groups")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        SeedData.createIfNeeded(in: context)
-                    } label: {
-                        Image(systemName: "plus")
-                    }
-                    .accessibilityLabel("Add a group")
+        }
+        .navigationTitle("Groups")
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    showingCreateGroup = true
+                } label: {
+                    Image(systemName: "plus")
                 }
+                .accessibilityLabel("Add a group")
             }
         }
     }
 
-    // MARK: - Pieces
-
     private var groupList: some View {
-        List {
+        List(selection: $selection) {
             Section {
                 summaryCard
                     .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
@@ -44,16 +60,36 @@ struct GroupsView: View {
 
             Section("Your Groups") {
                 ForEach(groups) { group in
-                    NavigationLink {
-                        GroupDetailView(group: group)
-                    } label: {
-                        GroupRow(group: group)
-                    }
+                    GroupRow(group: group, balance: myBalances[group.groupID] ?? 0)
+                        .tag(group)
+                        .swipeActions(edge: .trailing) {
+                            Button("Archive", systemImage: "archivebox") {
+                                archive(group)
+                            }
+                            .tint(.orange)
+                        }
                 }
             }
         }
         .listStyle(.insetGrouped)
     }
+
+    // MARK: - Detail
+
+    @ViewBuilder
+    private var detail: some View {
+        if let selection, !selection.isDeleted {
+            GroupDetailView(group: selection)
+        } else {
+            ContentUnavailableView(
+                "No group selected",
+                systemImage: "person.3",
+                description: Text("Pick a group to see its bills and balances.")
+            )
+        }
+    }
+
+    // MARK: - Pieces
 
     private var summaryCard: some View {
         HStack(spacing: 24) {
@@ -89,33 +125,58 @@ struct GroupsView: View {
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 40)
+
             Button("Create a Group") {
-                SeedData.createIfNeeded(in: context)
+                showingCreateGroup = true
             }
             .buttonStyle(.borderedProminent)
             .padding(.top, 8)
+
+            Button("Load sample data") {
+                SeedData.createIfNeeded(in: context)
+            }
+            .font(.footnote)
+            .padding(.top, 2)
+        }
+    }
+
+    // MARK: - Actions
+
+    private func archive(_ group: CDGroup) {
+        if selection == group { selection = nil }
+        group.isArchived = true
+        do {
+            try context.save()
+        } catch {
+            context.rollback()
         }
     }
 
     // MARK: - Totals
 
-    private var totalOwedToMe: Decimal {
-        groups.reduce(0) { sum, group in
-            let balance = BalanceService.myBalance(in: group)
-            return balance > 0 ? sum + balance : sum
+    /// Every balance is computed once per redraw and shared between the
+    /// summary card and the rows. Reading `myBalance` inside each row instead
+    /// would recompute the whole group's ledger several times over.
+    private var myBalances: [UUID: Decimal] {
+        var result: [UUID: Decimal] = [:]
+        for group in groups {
+            result[group.groupID] = BalanceService.myBalance(in: group)
         }
+        return result
+    }
+
+    private var totalOwedToMe: Decimal {
+        myBalances.values.filter { $0 > 0 }.reduce(0, +)
     }
 
     private var totalIOwe: Decimal {
-        groups.reduce(0) { sum, group in
-            let balance = BalanceService.myBalance(in: group)
-            return balance < 0 ? sum + abs(balance) : sum
-        }
+        myBalances.values.filter { $0 < 0 }.reduce(0) { $0 + abs($1) }
     }
 }
 
 struct GroupRow: View {
     @ObservedObject var group: CDGroup
+    let balance: Decimal
 
     var body: some View {
         HStack(spacing: 12) {
@@ -144,10 +205,8 @@ struct GroupRow: View {
         }
         .padding(.vertical, 4)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(group.displayName), \(accessibleBalance)")
+        .accessibilityLabel("\(group.displayName), \(group.memberList.count) members, \(accessibleBalance)")
     }
-
-    private var balance: Decimal { BalanceService.myBalance(in: group) }
 
     private var balanceLabel: String {
         if balance == 0 { return "Settled up" }

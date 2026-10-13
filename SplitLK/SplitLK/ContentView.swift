@@ -6,7 +6,7 @@ struct ContentView: View {
             GroupsView()
                 .tabItem { Label("Groups", systemImage: "person.3.fill") }
 
-            Text("Insights")
+            InsightsView()
                 .tabItem { Label("Insights", systemImage: "chart.pie.fill") }
 
             SettingsView()
