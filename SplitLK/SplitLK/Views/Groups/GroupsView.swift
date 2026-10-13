@@ -10,7 +10,10 @@ struct GroupsView: View {
         animation: .default
     ) private var groups: FetchedResults<CDGroup>
 
+    @Environment(SyncService.self) private var sync
+
     @State private var showingCreateGroup = false
+    @State private var showingJoinGroup = false
     @State private var selection: CDGroup?
 
     var body: some View {
@@ -25,6 +28,9 @@ struct GroupsView: View {
         .navigationSplitViewStyle(.balanced)
         .sheet(isPresented: $showingCreateGroup) {
             CreateGroupView()
+        }
+        .sheet(isPresented: $showingJoinGroup) {
+            JoinGroupView(sync: sync)
         }
     }
 
@@ -41,12 +47,17 @@ struct GroupsView: View {
         .navigationTitle("Groups")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Button {
-                    showingCreateGroup = true
+                Menu {
+                    Button("New Group", systemImage: "plus") {
+                        showingCreateGroup = true
+                    }
+                    Button("Join with a Code", systemImage: "person.badge.key") {
+                        showingJoinGroup = true
+                    }
                 } label: {
                     Image(systemName: "plus")
                 }
-                .accessibilityLabel("Add a group")
+                .accessibilityLabel("Add or join a group")
             }
         }
     }
@@ -132,11 +143,18 @@ struct GroupsView: View {
             .buttonStyle(.borderedProminent)
             .padding(.top, 8)
 
+            Button("Join with a code") {
+                showingJoinGroup = true
+            }
+            .font(.subheadline)
+            .padding(.top, 2)
+
             Button("Load sample data") {
                 SeedData.createIfNeeded(in: context)
             }
             .font(.footnote)
-            .padding(.top, 2)
+            .foregroundStyle(.secondary)
+            .padding(.top, 8)
         }
     }
 

@@ -4,10 +4,12 @@ import CoreData
 struct GroupDetailView: View {
     @ObservedObject var group: CDGroup
     @Environment(\.managedObjectContext) private var context
+    @Environment(SyncService.self) private var sync
 
     @State private var tab: Tab = .bills
     @State private var showingSettleUp = false
     @State private var showingAddBill = false
+    @State private var showingInvite = false
 
     enum Tab: String, CaseIterable, Identifiable {
         case bills, balances
@@ -34,6 +36,14 @@ struct GroupDetailView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
+                    showingInvite = true
+                } label: {
+                    Image(systemName: "person.badge.plus")
+                }
+                .accessibilityLabel("Show the invite code")
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
                     showingAddBill = true
                 } label: {
                     Image(systemName: "plus")
@@ -48,6 +58,20 @@ struct GroupDetailView: View {
         }
         .sheet(isPresented: $showingAddBill) {
             AddBillChooser(group: group)
+        }
+        .task {
+            // Push whatever happened offline, then watch for other members'
+            // changes while this group is on screen.
+            await sync.push(group)
+            sync.startListening(to: group, context: context)
+        }
+        .onDisappear { sync.stopListening(to: group) }
+        .alert("Invite Code", isPresented: $showingInvite) {
+            Button("Copy") { UIPasteboard.general.string = group.inviteCode ?? "" }
+            Button("Done", role: .cancel) { }
+        } message: {
+            Text(group.inviteCode.map { "Share \($0) so others can join this group." }
+                 ?? "This group has no invite code yet.")
         }
     }
 

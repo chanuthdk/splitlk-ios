@@ -54,6 +54,7 @@
         <attribute name="colorHex" attributeType="String"/>
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="isMe" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="linkedUid" optional="YES" attributeType="String"/>
         <attribute name="name" attributeType="String"/>
         <relationship name="billShares" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDBillShare" inverseName="member" inverseEntity="CDBillShare"/>
         <relationship name="group" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CDGroup" inverseName="members" inverseEntity="CDGroup"/>

@@ -8,6 +8,8 @@ struct SettingsView: View {
     @AppStorage("reminderDays") private var reminderDays = 3
     @AppStorage("requireBiometrics") private var requireBiometrics = true
 
+    @Environment(SyncService.self) private var sync
+
     @State private var notifications = NotificationService()
     @State private var showingResetConfirm = false
 
@@ -16,6 +18,22 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             Form {
+                Section {
+                    LabeledContent("Status") {
+                        Text(syncLabel).foregroundStyle(syncTint)
+                    }
+                    Button("Sync all groups now") {
+                        Task {
+                            for group in groups { await sync.push(group) }
+                        }
+                    }
+                    .disabled(groups.isEmpty)
+                } header: {
+                    Text("Sync")
+                } footer: {
+                    Text("Groups sync in the background while you use the app. Everything works offline and uploads when you're back online.")
+                }
+
                 Section("Security") {
                     Toggle("Require Face ID", isOn: $requireBiometrics)
                 }
@@ -72,6 +90,24 @@ struct SettingsView: View {
                 Button("Delete everything", role: .destructive) { resetAll() }
                 Button("Cancel", role: .cancel) { }
             }
+        }
+    }
+
+    // MARK: - Sync status
+
+    private var syncLabel: String {
+        switch sync.status {
+        case .idle:               return "Waiting"
+        case .syncing:            return "Syncing…"
+        case .synced(let date):   return "Synced \(date.formatted(.dateTime.hour().minute()))"
+        case .failed:             return "Offline"
+        }
+    }
+
+    private var syncTint: Color {
+        switch sync.status {
+        case .failed: return .orange
+        default:      return .secondary
         }
     }
 

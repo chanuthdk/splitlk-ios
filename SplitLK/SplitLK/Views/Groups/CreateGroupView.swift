@@ -5,6 +5,8 @@ struct CreateGroupView: View {
     @Environment(\.managedObjectContext) private var context
     @Environment(\.dismiss) private var dismiss
 
+    @Environment(SyncService.self) private var sync
+
     @State private var model = GroupEditorViewModel()
     @State private var saveError: String?
     @FocusState private var newMemberFocused: Bool
@@ -146,8 +148,11 @@ struct CreateGroupView: View {
 
     private func save() {
         do {
-            try model.save(in: context)
+            let group = try model.save(in: context)
             dismiss()
+            // The group exists locally either way; uploading it is what makes
+            // the invite code usable, so a failure here is not fatal.
+            Task { await sync.push(group) }
         } catch {
             context.rollback()
             saveError = error.localizedDescription
