@@ -10,6 +10,10 @@ struct SplitLKApp: App {
     @State private var sync = SyncService()
     @Environment(\.scenePhase) private var scenePhase
 
+    /// Mirrors the Settings toggle. When the user turns the lock off, the
+    /// app opens straight to their groups instead of prompting.
+    @AppStorage("requireBiometrics") private var requireBiometrics = true
+
     init() {
         // Configured once at launch, before any Firestore call is made.
         FirebaseApp.configure()
@@ -18,7 +22,7 @@ struct SplitLKApp: App {
     var body: some Scene {
         WindowGroup {
             Group {
-                if biometrics.isUnlocked {
+                if biometrics.isUnlocked || !requireBiometrics {
                     ContentView()
                         .environment(sync)
                 } else {
@@ -36,7 +40,7 @@ struct SplitLKApp: App {
                 // Re-lock when the app leaves the foreground, so balances
                 // are not visible to someone picking up an unlocked phone.
                 if phase == .background {
-                    biometrics.lock()
+                    if requireBiometrics { biometrics.lock() }
                     sync.stopAll()
                 }
             }

@@ -27,7 +27,14 @@ final class SyncService {
     private(set) var uid: String?
 
     private var listeners: [UUID: ListenerRegistration] = [:]
-    private let database = Firestore.firestore()
+
+    /// Resolved on each use rather than stored. A stored property would be
+    /// initialised when SyncService is constructed, and SwiftUI builds the
+    /// App's @State properties before the body of its init() runs — so
+    /// Firestore would be touched before FirebaseApp.configure() had been
+    /// called, and crash. Firestore.firestore() returns the shared instance,
+    /// so looking it up repeatedly costs nothing.
+    private var database: Firestore { Firestore.firestore() }
 
     // MARK: - Session
 

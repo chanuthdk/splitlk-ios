@@ -149,10 +149,11 @@ struct CreateGroupView: View {
     private func save() {
         do {
             let group = try model.save(in: context)
-            dismiss()
-            // The group exists locally either way; uploading it is what makes
-            // the invite code usable, so a failure here is not fatal.
+            // Started before dismissing so the upload is not racing the
+            // view's teardown. The group exists locally either way; uploading
+            // is what makes the invite code usable, so a failure is not fatal.
             Task { await sync.push(group) }
+            dismiss()
         } catch {
             context.rollback()
             saveError = error.localizedDescription
