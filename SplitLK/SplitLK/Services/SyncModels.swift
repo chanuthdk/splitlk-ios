@@ -165,8 +165,18 @@ enum SyncMapper {
         var membersByID: [String: CDMember] = [:]
         for dto in bundle.members {
             guard let id = UUID(uuidString: dto.id) else { continue }
-            let member = existing(CDMember.self, id: id, in: context)
-                ?? CDMember(context: context)
+
+            let member: CDMember
+            if let found = existing(CDMember.self, id: id, in: context) {
+                member = found
+            } else {
+                member = CDMember(context: context)
+                // Downloaded members are other people by default. Which one
+                // represents this device is decided separately, when the user
+                // claims their seat, so it must not be left unset here.
+                member.isMe = false
+            }
+
             member.id = id
             member.name = dto.name
             member.colorHex = dto.colorHex
@@ -266,5 +276,28 @@ enum SyncError: Error, LocalizedError {
         case .malformedPayload: return "That group's data couldn't be read."
         case .alreadyJoined:    return "You're already a member of that group."
         }
+    }
+}
+
+extension Error {
+    /// Core Data reports a failed save with several problems as a single
+    /// "Multiple validation errors occurred", hiding the detail in userInfo.
+    /// This unwraps it into something that names the entity and attribute,
+    /// which is the difference between a usable bug report and a shrug.
+    var detailedDescription: String {
+        let error = self as NSError
+
+        let nested = (error.userInfo[NSDetailedErrorsKey] as? [NSError]) ?? [error]
+
+        let parts: [String] = nested.map { item in
+            let entity = (item.userInfo[NSValidationObjectErrorKey] as? NSManagedObject)?
+                .entity.name ?? "object"
+            if let key = item.userInfo[NSValidationKeyErrorKey] as? String {
+                return "\(entity).\(key): \(item.localizedDescription)"
+            }
+            return "\(entity): \(item.localizedDescription)"
+        }
+
+        return parts.joined(separator: "\n")
     }
 }

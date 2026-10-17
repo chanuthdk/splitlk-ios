@@ -71,7 +71,7 @@ struct JoinGroupView: View {
                 try await sync.join(inviteCode: code, as: name, in: context)
                 dismiss()
             } catch {
-                errorMessage = error.localizedDescription
+                errorMessage = error.detailedDescription
             }
             isJoining = false
         }

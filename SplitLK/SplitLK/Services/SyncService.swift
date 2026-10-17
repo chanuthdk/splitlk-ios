@@ -64,7 +64,7 @@ final class SyncService {
             try await upload(bundle)
             status = .synced(Date())
         } catch {
-            status = .failed(error.localizedDescription)
+            status = .failed(error.detailedDescription)
         }
     }
 
@@ -134,7 +134,10 @@ final class SyncService {
             status = .synced(Date())
             return group
         } catch {
-            status = .failed(error.localizedDescription)
+            // The context holds half-applied objects once a save fails, and
+            // leaving them would poison every later save in this session.
+            context.rollback()
+            status = .failed(error.detailedDescription)
             throw error
         }
     }
@@ -244,7 +247,7 @@ final class SyncService {
             try SyncMapper.apply(bundle, in: context)
             status = .synced(Date())
         } catch {
-            status = .failed(error.localizedDescription)
+            status = .failed(error.detailedDescription)
         }
     }
 }
