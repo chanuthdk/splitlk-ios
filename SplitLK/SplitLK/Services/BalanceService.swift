@@ -65,4 +65,32 @@ enum BalanceService {
         guard let me = group.memberList.first(where: { $0.isMe }) else { return 0 }
         return balances(for: group)[me.memberID] ?? 0
     }
+
+    /// Builds the summary the Home Screen widget reads, and hands it over.
+    /// Called after anything that moves a balance, so the widget never shows
+    /// a figure the app itself has already superseded.
+    static func refreshWidget(with groups: [CDGroup]) {
+        var summaries: [BalanceSnapshot.GroupSummary] = []
+        var owedToMe: Decimal = 0
+        var iOwe: Decimal = 0
+
+        for group in groups where !group.isArchived {
+            let balance = myBalance(in: group)
+            if balance > 0 { owedToMe += balance }
+            if balance < 0 { iOwe += abs(balance) }
+
+            summaries.append(BalanceSnapshot.GroupSummary(id: group.groupID,
+                                                          name: group.displayName,
+                                                          balance: balance))
+        }
+
+        // Largest debts and credits first: a widget shows only a few rows,
+        // so the ones worth chasing should be the ones that fit.
+        summaries.sort { abs($0.balance) > abs($1.balance) }
+
+        WidgetBridge.write(BalanceSnapshot(owedToMe: owedToMe,
+                                           iOwe: iOwe,
+                                           groups: summaries,
+                                           updatedAt: Date()))
+    }
 }

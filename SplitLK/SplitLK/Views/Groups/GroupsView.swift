@@ -26,6 +26,12 @@ struct GroupsView: View {
             detail
         }
         .navigationSplitViewStyle(.balanced)
+        // The groups list is where every change eventually lands, so this is
+        // the one place that reliably sees a balance move.
+        .onChange(of: snapshotKey) { _, _ in
+            BalanceService.refreshWidget(with: Array(groups))
+        }
+        .task { BalanceService.refreshWidget(with: Array(groups)) }
         .sheet(isPresented: $showingCreateGroup) {
             CreateGroupView()
         }
@@ -189,6 +195,13 @@ struct GroupsView: View {
 
     private var totalIOwe: Decimal {
         myBalances.values.filter { $0 < 0 }.reduce(0) { $0 + abs($1) }
+    }
+
+    /// Changes whenever a balance could have moved, so the widget refresh
+    /// fires on a new bill or settlement as well as on a new group.
+    private var snapshotKey: String {
+        groups.map { "\($0.groupID)-\($0.billList.count)-\($0.settlementList.count)" }
+            .joined(separator: "|")
     }
 }
 
