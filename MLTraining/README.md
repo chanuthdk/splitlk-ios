@@ -12,21 +12,37 @@ exercise, not incidental to it.
 
 ## Data
 
-`item-categories.csv` — 1,766 labelled rows, two columns: `text`, `label`.
+`item-categories.csv` — 1,827 labelled rows, two columns: `text`, `label`.
 
 | Label | Rows |
 |---|---|
-| food | 554 |
-| drinks | 320 |
-| groceries | 288 |
-| transport | 231 |
-| other | 220 |
-| accommodation | 153 |
+| food | 582 |
+| groceries | 339 |
+| drinks | 311 |
+| other | 225 |
+| transport | 201 |
+| accommodation | 169 |
 
 Each seed term is expanded into the shapes OCR actually produces: upper
-case, lower case, spacing removed, trailing size markers such as "Large"
-or "(L)". That matters because the model sees recognised text, not menu
+case, lower case, spacing removed or doubled, truncation, trailing size
+markers such as "Large" or "(L)", and common character confusions (o→0,
+l→1, S→5). That matters because the model sees recognised text, not menu
 text.
+
+### A note on the first attempt
+
+An earlier version of this data also emitted single words pulled out of
+each term — the last word, the first two words. That produced direct label
+conflicts: "Ticket" appeared under both transport (Train Ticket) and other
+(Cinema Ticket), and "Rice" under both food (Fried Rice) and groceries
+(Samba Rice). A classifier cannot learn a contradiction, so it memorised
+the rest instead: **99% training accuracy against 74% validation**, a
+textbook overfit.
+
+The generator now keeps only variants that preserve the label, and drops
+any text that still ends up under more than one category. Nothing is
+dropped by the current rules, which is the point — the ambiguity was
+created by the expansion, not present in the source terms.
 
 ## Training
 
@@ -38,10 +54,14 @@ text.
 6. Leave Validation on **Automatic** so a split is held out
 7. Algorithm: **Maximum Entropy** — fast to train and small to ship,
    which suits short item names better than a transformer would
-8. **Train**, then check the Evaluation tab
+8. Set **Iterations** to **25**. The default 10 stops before the model has
+   converged on six classes
+9. **Train**, then check the Evaluation tab
 
-Expect validation accuracy in the nineties on this data. Note the figure;
-it belongs in the report.
+Note the validation accuracy; it belongs in the report, along with the
+per-class breakdown. A category scoring noticeably worse than the others
+is a finding worth stating rather than hiding — `other` is the usual
+culprit, being a catch-all with no consistent vocabulary.
 
 ## Adding it to the app
 
