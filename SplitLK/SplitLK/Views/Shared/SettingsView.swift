@@ -72,8 +72,21 @@ struct SettingsView: View {
                     }
                 }
 
-                Section("Preferences") {
+                Section {
                     LabeledContent("Home currency", value: "LKR")
+
+                    LabeledContent("Item categories") {
+                        Text(CategoryClassifier.isModelAvailable ? "On-device model" : "Keyword matching")
+                            .foregroundStyle(.secondary)
+                    }
+
+                    Button("Forget category corrections") {
+                        CategoryClassifier.forgetCorrections()
+                    }
+                } header: {
+                    Text("Preferences")
+                } footer: {
+                    Text("Scanned items are categorised on your device. Changing an item's category teaches it for next time.")
                 }
 
                 Section {

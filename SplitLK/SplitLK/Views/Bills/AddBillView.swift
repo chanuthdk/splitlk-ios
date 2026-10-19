@@ -66,9 +66,14 @@ struct AddBillView: View {
     private var itemsSection: some View {
         Section {
             ForEach($model.items) { $item in
-                ItemEditorRow(item: $item, group: model.group) { memberID in
-                    model.toggle(memberID, on: item.id)
-                }
+                ItemEditorRow(item: $item,
+                              group: model.group,
+                              onToggle: { memberID in
+                                  model.toggle(memberID, on: item.id)
+                              },
+                              onCategoryChange: { category in
+                                  model.setCategory(category, on: item.id)
+                              })
             }
             .onDelete { model.removeItems(at: $0) }
 
@@ -137,6 +142,7 @@ struct ItemEditorRow: View {
     @Binding var item: BillEditorViewModel.DraftItem
     let group: CDGroup
     let onToggle: (UUID) -> Void
+    let onCategoryChange: (SpendingCategory) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -146,13 +152,17 @@ struct ItemEditorRow: View {
                     .frame(width: 90)
             }
 
-            Picker("Category", selection: $item.category) {
+            Picker("Category", selection: Binding(
+                get: { item.category },
+                set: { onCategoryChange($0) }
+            )) {
                 ForEach(SpendingCategory.allCases) { category in
                     Label(category.label, systemImage: category.symbolName).tag(category)
                 }
             }
             .pickerStyle(.menu)
             .labelsHidden()
+            .accessibilityLabel("Category for \(item.name.isEmpty ? "this item" : item.name)")
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {

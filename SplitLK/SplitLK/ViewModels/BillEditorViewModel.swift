@@ -62,6 +62,14 @@ final class BillEditorViewModel {
         items.remove(atOffsets: offsets)
     }
 
+    /// Recategorising an item teaches the classifier, so the same line is
+    /// filed the user's way on every later receipt.
+    func setCategory(_ category: SpendingCategory, on itemID: UUID) {
+        guard let index = items.firstIndex(where: { $0.id == itemID }) else { return }
+        items[index].category = category
+        CategoryClassifier.remember(category, for: items[index].name)
+    }
+
     func toggle(_ memberID: UUID, on itemID: UUID) {
         guard let index = items.firstIndex(where: { $0.id == itemID }) else { return }
         if items[index].assignees.contains(memberID) {
@@ -145,7 +153,9 @@ final class BillEditorViewModel {
             self.merchant = merchant
         }
         items = parsed.items.map { parsedItem in
-            DraftItem(name: parsedItem.name, amount: parsedItem.amount)
+            DraftItem(name: parsedItem.name,
+                      amount: parsedItem.amount,
+                      category: CategoryClassifier.category(for: parsedItem.name))
         }
         serviceCharge = parsed.serviceCharge ?? 0
         tax = parsed.tax ?? 0
