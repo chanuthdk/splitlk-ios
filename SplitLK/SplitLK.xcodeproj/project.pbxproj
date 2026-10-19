@@ -10,9 +10,19 @@
 		B78126D530949777002CDFBE /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = B78126D430949777002CDFBE /* FirebaseAuth */; };
 		B78126D730949780002CDFBE /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = B78126D630949780002CDFBE /* FirebaseCore */; };
 		B78126D93094978A002CDFBE /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = B78126D83094978A002CDFBE /* FirebaseFirestore */; };
+		B78126E23094AA14002CDFBE /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B78126E13094AA14002CDFBE /* WidgetKit.framework */; };
+		B78126E43094AA14002CDFBE /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B78126E33094AA14002CDFBE /* SwiftUI.framework */; };
+		B78126F13094AA15002CDFBE /* SplitLKWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B78126E03094AA14002CDFBE /* SplitLKWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		B78126EF3094AA15002CDFBE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C078E23A308F81B40047E30F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B78126DF3094AA14002CDFBE;
+			remoteInfo = SplitLKWidgetExtension;
+		};
 		C078E255308F81B50047E30F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C078E23A308F81B40047E30F /* Project object */;
@@ -29,13 +39,49 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		B78126F63094AA15002CDFBE /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				B78126F13094AA15002CDFBE /* SplitLKWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		B78126E03094AA14002CDFBE /* SplitLKWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SplitLKWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B78126E13094AA14002CDFBE /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		B78126E33094AA14002CDFBE /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		B78126F83094AE07002CDFBE /* SplitLKWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SplitLKWidgetExtension.entitlements; sourceTree = "<group>"; };
 		C078E242308F81B40047E30F /* SplitLK.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SplitLK.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C078E254308F81B50047E30F /* SplitLKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SplitLKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C078E25E308F81B50047E30F /* SplitLKUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SplitLKUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		B78126F23094AA15002CDFBE /* Exceptions for "SplitLKWidget" folder in "SplitLKWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = B78126DF3094AA14002CDFBE /* SplitLKWidgetExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		B78126E53094AA14002CDFBE /* SplitLKWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B78126F23094AA15002CDFBE /* Exceptions for "SplitLKWidget" folder in "SplitLKWidgetExtension" target */,
+			);
+			path = SplitLKWidget;
+			sourceTree = "<group>";
+		};
 		C078E244308F81B40047E30F /* SplitLK */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = SplitLK;
@@ -54,6 +100,15 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		B78126DD3094AA14002CDFBE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B78126E43094AA14002CDFBE /* SwiftUI.framework in Frameworks */,
+				B78126E23094AA14002CDFBE /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C078E23F308F81B40047E30F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -84,6 +139,8 @@
 		B78126D330949766002CDFBE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B78126E13094AA14002CDFBE /* WidgetKit.framework */,
+				B78126E33094AA14002CDFBE /* SwiftUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -91,9 +148,11 @@
 		C078E239308F81B40047E30F = {
 			isa = PBXGroup;
 			children = (
+				B78126F83094AE07002CDFBE /* SplitLKWidgetExtension.entitlements */,
 				C078E244308F81B40047E30F /* SplitLK */,
 				C078E257308F81B50047E30F /* SplitLKTests */,
 				C078E261308F81B50047E30F /* SplitLKUITests */,
+				B78126E53094AA14002CDFBE /* SplitLKWidget */,
 				B78126D330949766002CDFBE /* Frameworks */,
 				C078E243308F81B40047E30F /* Products */,
 			);
@@ -105,6 +164,7 @@
 				C078E242308F81B40047E30F /* SplitLK.app */,
 				C078E254308F81B50047E30F /* SplitLKTests.xctest */,
 				C078E25E308F81B50047E30F /* SplitLKUITests.xctest */,
+				B78126E03094AA14002CDFBE /* SplitLKWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -112,6 +172,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		B78126DF3094AA14002CDFBE /* SplitLKWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B78126F33094AA15002CDFBE /* Build configuration list for PBXNativeTarget "SplitLKWidgetExtension" */;
+			buildPhases = (
+				B78126DC3094AA14002CDFBE /* Sources */,
+				B78126DD3094AA14002CDFBE /* Frameworks */,
+				B78126DE3094AA14002CDFBE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				B78126E53094AA14002CDFBE /* SplitLKWidget */,
+			);
+			name = SplitLKWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = SplitLKWidgetExtension;
+			productReference = B78126E03094AA14002CDFBE /* SplitLKWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		C078E241308F81B40047E30F /* SplitLK */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C078E268308F81B50047E30F /* Build configuration list for PBXNativeTarget "SplitLK" */;
@@ -119,10 +201,12 @@
 				C078E23E308F81B40047E30F /* Sources */,
 				C078E23F308F81B40047E30F /* Frameworks */,
 				C078E240308F81B40047E30F /* Resources */,
+				B78126F63094AA15002CDFBE /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				B78126F03094AA15002CDFBE /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				C078E244308F81B40047E30F /* SplitLK */,
@@ -193,6 +277,9 @@
 				LastSwiftUpdateCheck = 2620;
 				LastUpgradeCheck = 2620;
 				TargetAttributes = {
+					B78126DF3094AA14002CDFBE = {
+						CreatedOnToolsVersion = 26.2;
+					};
 					C078E241308F81B40047E30F = {
 						CreatedOnToolsVersion = 26.2;
 					};
@@ -226,11 +313,19 @@
 				C078E241308F81B40047E30F /* SplitLK */,
 				C078E253308F81B50047E30F /* SplitLKTests */,
 				C078E25D308F81B50047E30F /* SplitLKUITests */,
+				B78126DF3094AA14002CDFBE /* SplitLKWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		B78126DE3094AA14002CDFBE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C078E240308F81B40047E30F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -255,6 +350,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		B78126DC3094AA14002CDFBE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C078E23E308F81B40047E30F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -279,6 +381,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		B78126F03094AA15002CDFBE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B78126DF3094AA14002CDFBE /* SplitLKWidgetExtension */;
+			targetProxy = B78126EF3094AA15002CDFBE /* PBXContainerItemProxy */;
+		};
 		C078E256308F81B50047E30F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = C078E241308F81B40047E30F /* SplitLK */;
@@ -292,6 +399,68 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		B78126F43094AA15002CDFBE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = SplitLKWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SplitLKWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SplitLKWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chanuth.SplitLK.SplitLKWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B78126F53094AA15002CDFBE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = SplitLKWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SplitLKWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SplitLKWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chanuth.SplitLK.SplitLKWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		C078E266308F81B50047E30F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -416,8 +585,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SplitLK/SplitLK.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "SplitLK uses Face ID to protect your group balances and bills.";
@@ -448,8 +619,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SplitLK/SplitLK.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "SplitLK uses Face ID to protect your group balances and bills.";
@@ -558,6 +731,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		B78126F33094AA15002CDFBE /* Build configuration list for PBXNativeTarget "SplitLKWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B78126F43094AA15002CDFBE /* Debug */,
+				B78126F53094AA15002CDFBE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		C078E23D308F81B40047E30F /* Build configuration list for PBXProject "SplitLK" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
