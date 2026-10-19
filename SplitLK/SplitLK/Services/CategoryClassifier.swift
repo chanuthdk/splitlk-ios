@@ -44,13 +44,31 @@ enum CategoryClassifier {
             return remembered
         }
 
-        if let model,
-           let label = model.predictedLabel(for: name),
-           let category = SpendingCategory(rawValue: label) {
+        if let category = modelCategory(for: name) {
             return category
         }
 
         return keywordCategory(for: name)
+    }
+
+    /// The model's answer, but only when it is reasonably sure.
+    ///
+    /// A classifier always returns its best label, even for an item it has
+    /// never seen anything like — so without a floor, a misread line becomes
+    /// a confident wrong category rather than an honest "other". Below the
+    /// threshold the keyword pass gets a say instead.
+    private static let minimumConfidence = 0.45
+
+    private static func modelCategory(for name: String) -> SpendingCategory? {
+        guard let model else { return nil }
+
+        let hypotheses = model.predictedLabelHypotheses(for: name, maximumCount: 1)
+        guard let (label, confidence) = hypotheses.max(by: { $0.value < $1.value }),
+              confidence >= minimumConfidence else {
+            return nil
+        }
+
+        return SpendingCategory(rawValue: label)
     }
 
     /// Records a correction so the same item is categorised the user's way
@@ -91,7 +109,10 @@ enum CategoryClassifier {
                   "pharmacy", "medicine", "souvenir", "donation", "fee"])
     ]
 
-    private static func keywordCategory(for name: String) -> SpendingCategory {
+    /// Internal rather than private so the fallback can be tested on its own.
+    /// Testing it through `category(for:)` would measure whichever path
+    /// happened to run, which changes depending on whether the model shipped.
+    static func keywordCategory(for name: String) -> SpendingCategory {
         // Longest match wins, so "ice cream" beats a stray "cream" and
         // "service charge" is not read as food.
         var best: (category: SpendingCategory, length: Int)?

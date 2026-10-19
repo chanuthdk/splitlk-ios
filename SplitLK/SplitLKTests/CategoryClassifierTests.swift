@@ -2,51 +2,55 @@ import Testing
 import Foundation
 @testable import SplitLK
 
-/// These exercise the keyword fallback, which is what runs when the trained
-/// model is not bundled. The model's own accuracy is measured in Create ML
-/// against a held-out split rather than here.
-struct CategoryClassifierTests {
-
-    init() {
-        CategoryClassifier.forgetCorrections()
-    }
+/// The keyword pass is tested directly rather than through `category(for:)`,
+/// because that entry point uses the trained model when one is bundled. These
+/// assertions are about the fallback's own behaviour, which has to hold
+/// whether or not the model shipped.
+struct KeywordFallbackTests {
 
     @Test("Local dishes are recognised as food")
     func localDishes() {
-        #expect(CategoryClassifier.category(for: "Chicken Kottu") == .food)
-        #expect(CategoryClassifier.category(for: "Watalappan") == .food)
-        #expect(CategoryClassifier.category(for: "String Hoppers") == .food)
+        #expect(CategoryClassifier.keywordCategory(for: "chicken kottu") == .food)
+        #expect(CategoryClassifier.keywordCategory(for: "watalappan") == .food)
+        #expect(CategoryClassifier.keywordCategory(for: "string hoppers") == .food)
     }
 
     @Test("Drinks are told apart from food")
     func drinks() {
-        #expect(CategoryClassifier.category(for: "Lime Juice") == .drinks)
-        #expect(CategoryClassifier.category(for: "Lion Lager") == .drinks)
-        #expect(CategoryClassifier.category(for: "Iced Coffee") == .drinks)
+        #expect(CategoryClassifier.keywordCategory(for: "lime juice") == .drinks)
+        #expect(CategoryClassifier.keywordCategory(for: "lion lager") == .drinks)
+        #expect(CategoryClassifier.keywordCategory(for: "iced coffee") == .drinks)
     }
 
     @Test("Transport lines are recognised")
     func transport() {
-        #expect(CategoryClassifier.category(for: "Tuk-tuk to Unawatuna") == .transport)
-        #expect(CategoryClassifier.category(for: "Petrol") == .transport)
-        #expect(CategoryClassifier.category(for: "Train Ticket") == .transport)
+        #expect(CategoryClassifier.keywordCategory(for: "tuk-tuk to unawatuna") == .transport)
+        #expect(CategoryClassifier.keywordCategory(for: "petrol") == .transport)
+        #expect(CategoryClassifier.keywordCategory(for: "train ticket") == .transport)
     }
 
     @Test("A service charge is not read as food")
     func serviceChargeIsNotFood() {
-        // "service charge" is longer than any food keyword it contains,
-        // so the longest-match rule keeps it out of the food total.
-        #expect(CategoryClassifier.category(for: "Service Charge 10%") == .other)
+        // "service charge" is longer than any food keyword inside the line,
+        // and the longest match wins, so it stays out of the food total.
+        #expect(CategoryClassifier.keywordCategory(for: "service charge 10%") == .other)
     }
 
     @Test("Longer keywords win over shorter ones inside them")
     func longestMatchWins() {
-        #expect(CategoryClassifier.category(for: "Ice Cream") == .food)
+        #expect(CategoryClassifier.keywordCategory(for: "ice cream") == .food)
     }
 
     @Test("An unrecognised item falls back to other rather than guessing")
     func unknownFallsBack() {
-        #expect(CategoryClassifier.category(for: "Zxqv Wgth") == .other)
+        #expect(CategoryClassifier.keywordCategory(for: "zxqv wgth") == .other)
+    }
+}
+
+struct CategoryCorrectionTests {
+
+    init() {
+        CategoryClassifier.forgetCorrections()
     }
 
     @Test("An empty name is not categorised")
@@ -54,26 +58,37 @@ struct CategoryClassifierTests {
         #expect(CategoryClassifier.category(for: "   ") == .other)
     }
 
-    @Test("A correction is remembered for next time")
-    func correctionsAreRemembered() {
+    @Test("A correction overrides whatever the classifier would have said")
+    func correctionWins() {
         let item = "Mystery Platter"
-        #expect(CategoryClassifier.category(for: item) == .other)
-
-        CategoryClassifier.remember(.food, for: item)
-        #expect(CategoryClassifier.category(for: item) == .food)
-
-        // Matching ignores case and extra spacing, so the same line read
-        // slightly differently by OCR still picks up the correction.
-        #expect(CategoryClassifier.category(for: "  mystery   platter ") == .food)
-
+        CategoryClassifier.remember(.groceries, for: item)
+        #expect(CategoryClassifier.category(for: item) == .groceries)
         CategoryClassifier.forgetCorrections()
-        #expect(CategoryClassifier.category(for: item) == .other)
     }
 
-    @Test("A correction overrides what the classifier would have said")
-    func correctionBeatsKeyword() {
-        CategoryClassifier.remember(.groceries, for: "Bread Roll")
-        #expect(CategoryClassifier.category(for: "Bread Roll") == .groceries)
+    @Test("A correction survives a differently formatted version of the name")
+    func correctionIsCaseAndSpaceInsensitive() {
+        CategoryClassifier.remember(.accommodation, for: "Beach Cabana")
+        // OCR rarely returns the same spacing or case twice.
+        #expect(CategoryClassifier.category(for: "  beach   CABANA ") == .accommodation)
+        CategoryClassifier.forgetCorrections()
+    }
+
+    @Test("Forgetting corrections restores the normal behaviour")
+    func forgettingWorks() {
+        CategoryClassifier.remember(.transport, for: "Chicken Kottu")
+        #expect(CategoryClassifier.category(for: "Chicken Kottu") == .transport)
+
+        CategoryClassifier.forgetCorrections()
+        #expect(CategoryClassifier.category(for: "Chicken Kottu") == .food)
+    }
+
+    @Test("Corrections are kept per item, not applied globally")
+    func correctionsAreScopedToOneItem() {
+        CategoryClassifier.remember(.groceries, for: "Bread")
+        #expect(CategoryClassifier.category(for: "Bread") == .groceries)
+        // A different item is unaffected.
+        #expect(CategoryClassifier.category(for: "Lime Juice") == .drinks)
         CategoryClassifier.forgetCorrections()
     }
 }
