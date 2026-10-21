@@ -104,9 +104,14 @@ enum CategoryClassifier {
                  "soup", "chicken", "fish", "prawn", "cutlet", "vadai",
                  "samosa", "cake", "pudding", "ice cream", "watalappan",
                  "fries", "wings", "buffet", "meal", "bun", "roll"]),
-        (.other, ["service charge", "tip", "ticket", "entry", "entrance",
+        // "ticket" is deliberately absent: a train ticket is transport and a
+        // cinema ticket is not, so the word carries no category on its own.
+        // An unmatched line already falls through to .other, which is the
+        // right answer for the cinema case anyway.
+        (.other, ["service charge", "tip", "entry", "entrance",
                   "guide", "spa", "massage", "laundry", "sim", "recharge",
-                  "pharmacy", "medicine", "souvenir", "donation", "fee"])
+                  "pharmacy", "medicine", "souvenir", "donation",
+                  "insurance"])
     ]
 
     /// Internal rather than private so the fallback can be tested on its own.
