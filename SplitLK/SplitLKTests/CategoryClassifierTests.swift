@@ -47,6 +47,10 @@ struct KeywordFallbackTests {
     }
 }
 
+/// Serialized because every test here writes to the same UserDefaults key.
+/// Swift Testing runs tests in parallel by default, so without this they
+/// clear each other's corrections mid-run and fail at random.
+@Suite(.serialized)
 struct CategoryCorrectionTests {
 
     init() {
