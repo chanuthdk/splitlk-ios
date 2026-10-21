@@ -22,6 +22,10 @@ struct GroupDTO: Codable {
     /// Firebase Auth uids allowed to read and write this group. Used by the
     /// Firestore security rules, not by the app's own logic.
     var memberUids: [String]
+    /// Optional because documents written before the group picker existed
+    /// have neither field, and a non-optional would fail to decode them.
+    var colorHex: String?
+    var iconName: String?
 }
 
 struct MemberDTO: Codable {
@@ -92,7 +96,9 @@ enum SyncMapper {
             createdAt: group.createdAt ?? Date(),
             inviteCode: group.inviteCode ?? "",
             updatedAt: Date(),
-            memberUids: memberUids
+            memberUids: memberUids,
+            colorHex: group.displayColorHex,
+            iconName: group.displayIconName
         )
 
         let members = group.memberList.map { member in
@@ -161,6 +167,10 @@ enum SyncMapper {
         group.createdAt = bundle.group.createdAt
         group.inviteCode = bundle.group.inviteCode
         group.isArchived = false
+        // Falls back rather than writing nil, so a group shared from a device
+        // on an older build still gets a colour and an icon here.
+        group.colorHex = bundle.group.colorHex ?? GroupStyle.fallbackColorHex(for: bundle.group.name)
+        group.iconName = bundle.group.iconName ?? GroupStyle.defaultIconName
 
         var membersByID: [String: CDMember] = [:]
         for dto in bundle.members {

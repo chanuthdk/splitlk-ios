@@ -23,6 +23,8 @@ final class GroupEditorViewModel {
     var currencyCode: String = "LKR"
     var members: [DraftMember]
     var newMemberName: String = ""
+    var colorHex: String = GroupStyle.defaultColorHex
+    var iconName: String = GroupStyle.defaultIconName
 
     /// Short, human-readable code other members type to join this group.
     /// Ambiguous characters (0/O, 1/I) are left out so it survives being
@@ -87,6 +89,8 @@ final class GroupEditorViewModel {
         group.createdAt = Date()
         group.isArchived = false
         group.inviteCode = inviteCode
+        group.colorHex = colorHex
+        group.iconName = iconName
 
         for draft in members {
             let member = CDMember(context: context)

@@ -16,6 +16,8 @@ enum SeedData {
         group.currencyCode = "LKR"
         group.createdAt = Date()
         group.isArchived = false
+        group.colorHex = "0891B2"
+        group.iconName = "beach.umbrella.fill"
 
         let me = member(named: "Chanuth", color: "4F46E5", isMe: true, in: context)
         let nimal = member(named: "Nimal", color: "16A34A", isMe: false, in: context)

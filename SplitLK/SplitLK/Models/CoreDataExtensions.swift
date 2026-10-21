@@ -14,6 +14,12 @@ extension CDGroup {
     var settlementList: [CDSettlement] {
         Array(settlements as? Set<CDSettlement> ?? [])
     }
+
+    /// Falls back rather than trusting the model's default, because a group
+    /// downloaded from another device predates these attributes and arrives
+    /// with both nil.
+    var displayColorHex: String { colorHex ?? GroupStyle.defaultColorHex }
+    var displayIconName: String { iconName ?? GroupStyle.defaultIconName }
 }
 
 extension CDMember {
