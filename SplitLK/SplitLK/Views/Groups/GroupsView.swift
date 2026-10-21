@@ -72,7 +72,11 @@ struct GroupsView: View {
         List(selection: $selection) {
             Section {
                 summaryCard
-                    .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                    // The card draws its own background, so the row's inset
+                    // and fill are cleared to let it sit edge to edge.
+                    .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 12, trailing: 16))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
             }
 
             Section("Your Groups") {
@@ -108,26 +112,81 @@ struct GroupsView: View {
 
     // MARK: - Pieces
 
+    /// The one number that answers "where do I stand" is given the size to
+    /// match, with the two halves it is made of underneath. The previous
+    /// version showed owed and owe as equal columns, which left the reader
+    /// to do the subtraction.
     private var summaryCard: some View {
-        HStack(spacing: 24) {
-            balanceColumn(title: "You're owed", amount: totalOwedToMe, tint: .green)
-            Divider()
-            balanceColumn(title: "You owe", amount: totalIOwe, tint: .red)
+        VStack(alignment: .leading, spacing: 14) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(netTitle)
+                    .font(.footnote.weight(.medium))
+                    .foregroundStyle(.secondary)
+
+                Text(Money.format(abs(netBalance)))
+                    .font(.system(size: 34, weight: .semibold, design: .rounded))
+                    .foregroundStyle(netTint)
+                    .contentTransition(.numericText())
+                    .animation(.snappy, value: netBalance)
+                    .minimumScaleFactor(0.6)
+                    .lineLimit(1)
+            }
+
+            if totalOwedToMe > 0 || totalIOwe > 0 {
+                HStack(spacing: 20) {
+                    supportingFigure(title: "Owed to you", amount: totalOwedToMe, tint: .green)
+                    supportingFigure(title: "You owe", amount: totalIOwe, tint: .red)
+                    Spacer(minLength: 0)
+                }
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, 4)
-    }
-
-    private func balanceColumn(title: String, amount: Decimal, tint: Color) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(title)
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-            Text(Money.format(amount))
-                .font(.headline)
-                .foregroundStyle(amount == 0 ? .secondary : tint)
+        .padding(16)
+        .background {
+            RoundedRectangle(cornerRadius: 16)
+                // Tinted by direction, so being up or down is legible before
+                // any of the text is read. Kept faint so the figure stays the
+                // brightest thing in the card.
+                .fill(LinearGradient(colors: [netTint.opacity(0.16), netTint.opacity(0.04)],
+                                     startPoint: .topLeading,
+                                     endPoint: .bottomTrailing))
         }
         .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibleSummary)
+    }
+
+    private func supportingFigure(title: String, amount: Decimal, tint: Color) -> some View {
+        VStack(alignment: .leading, spacing: 1) {
+            Text(title)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+            Text(Money.format(amount))
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(amount == 0 ? .secondary : tint)
+                .contentTransition(.numericText())
+                .animation(.snappy, value: amount)
+        }
+    }
+
+    private var netBalance: Decimal { totalOwedToMe - totalIOwe }
+
+    private var netTitle: String {
+        if netBalance > 0 { return "You're owed overall" }
+        if netBalance < 0 { return "You owe overall" }
+        return "All settled up"
+    }
+
+    private var netTint: Color {
+        if netBalance > 0 { return .green }
+        if netBalance < 0 { return .red }
+        return .secondary
+    }
+
+    private var accessibleSummary: String {
+        if netBalance == 0 { return "All settled up" }
+        let direction = netBalance > 0 ? "You are owed" : "You owe"
+        return "\(direction) \(Money.format(abs(netBalance))) overall. "
+            + "Owed to you \(Money.format(totalOwedToMe)), you owe \(Money.format(totalIOwe))."
     }
 
     private var emptyState: some View {
@@ -212,12 +271,12 @@ struct GroupRow: View {
     var body: some View {
         HStack(spacing: 12) {
             Circle()
-                .fill(Color(hex: "4F46E5").opacity(0.15))
+                .fill(tint.gradient)
                 .frame(width: 40, height: 40)
                 .overlay(
-                    Image(systemName: "person.3.fill")
-                        .font(.system(size: 16))
-                        .foregroundStyle(Color(hex: "4F46E5"))
+                    Image(systemName: group.displayIconName)
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundStyle(.white)
                 )
 
             VStack(alignment: .leading, spacing: 2) {
@@ -233,10 +292,18 @@ struct GroupRow: View {
             Text(balanceLabel)
                 .font(.subheadline.weight(.medium))
                 .foregroundStyle(balanceTint)
+                .contentTransition(.numericText())
+                .animation(.snappy, value: balance)
         }
         .padding(.vertical, 4)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(group.displayName), \(group.memberList.count) members, \(accessibleBalance)")
+    }
+
+    /// Groups created before the colour picker existed have no stored colour,
+    /// so one is derived from the name instead of leaving them all indigo.
+    private var tint: Color {
+        Color(hex: group.colorHex ?? GroupStyle.fallbackColorHex(for: group.displayName))
     }
 
     private var balanceLabel: String {
