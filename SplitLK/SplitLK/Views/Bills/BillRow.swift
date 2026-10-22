@@ -5,11 +5,14 @@ struct BillRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
+            // The circle takes the dominant category's colour, which makes the
+            // list scannable and shows the classifier's output without adding
+            // a label for it.
             Image(systemName: dominantCategory.symbolName)
                 .font(.system(size: 15))
                 .foregroundStyle(.white)
                 .frame(width: 34, height: 34)
-                .background(Circle().fill(Color(hex: "4F46E5")))
+                .background(Circle().fill(dominantCategory.color))
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(bill.displayMerchant)
@@ -26,7 +29,9 @@ struct BillRow: View {
         }
         .padding(.vertical, 4)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(bill.displayMerchant), \(subtitle), \(Money.format(bill.totalAmount))")
+        // The colour carries the category for a sighted user, so it is named
+        // here rather than left as decoration.
+        .accessibilityLabel("\(bill.displayMerchant), \(dominantCategory.label), \(subtitle), \(Money.format(bill.totalAmount))")
     }
 
     private var subtitle: String {

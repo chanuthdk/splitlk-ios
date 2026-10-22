@@ -37,6 +37,8 @@ struct InsightsView: View {
             VStack(alignment: .leading, spacing: 12) {
                 Text(Money.format(total))
                     .font(.title2.bold())
+                    .contentTransition(.numericText())
+                    .animation(.snappy, value: total)
                 Text("your share across \(groups.count) group\(groups.count == 1 ? "" : "s")")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
@@ -51,6 +53,13 @@ struct InsightsView: View {
                     .foregroundStyle(by: .value("Category", entry.category.label))
                 }
                 .frame(height: 200)
+                // Pinned to the category colours so a slice here matches the
+                // icon on the bill row. Left to Swift Charts, the same
+                // category would be a different colour on each screen.
+                .chartForegroundStyleScale(
+                    domain: categories.map(\.category.label),
+                    range: categories.map(\.category.color)
+                )
                 .chartLegend(position: .bottom, alignment: .leading, spacing: 8)
                 .accessibilityLabel("Spending by category")
                 .accessibilityValue(categoryAccessibilitySummary)
@@ -99,7 +108,7 @@ struct InsightsView: View {
                         .font(.system(size: 14))
                         .foregroundStyle(.white)
                         .frame(width: 30, height: 30)
-                        .background(Circle().fill(Color(hex: "4F46E5")))
+                        .background(Circle().fill(entry.category.color))
 
                     Text(entry.category.label)
 
