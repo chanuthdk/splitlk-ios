@@ -170,6 +170,11 @@ struct BalanceRow: View {
             Text(amount == 0 ? "Settled" : Money.format(abs(amount)))
                 .font(.subheadline.weight(.medium))
                 .foregroundStyle(tint)
+                // Rolls rather than cuts when a bill or settlement moves the
+                // figure, which makes it obvious that this row is the one
+                // that changed.
+                .contentTransition(.numericText())
+                .animation(.snappy, value: amount)
         }
         .padding(.vertical, 2)
         .accessibilityElement(children: .combine)
