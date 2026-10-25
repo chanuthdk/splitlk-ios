@@ -3,6 +3,10 @@ import CoreData
 
 struct AddBillChooser: View {
     let group: CDGroup
+    /// Reported to the presenter so the confirmation can be shown on the
+    /// group, after this sheet has closed.
+    var onSaved: ((String) -> Void)?
+
     @Environment(\.dismiss) private var dismiss
 
     @State private var path: [Route] = []
@@ -61,7 +65,10 @@ struct AddBillChooser: View {
                     }
 
                 case .manual:
-                    AddBillView(group: group, prefilled: prefilled)
+                    AddBillView(group: group, prefilled: prefilled) { message in
+                        onSaved?(message)
+                        dismiss()
+                    }
                 }
             }
         }

@@ -11,6 +11,12 @@ struct GroupDetailView: View {
     @State private var showingAddBill = false
     @State private var showingInvite = false
 
+    /// Held until the sheet has finished closing, then shown. Setting the
+    /// toast while the sheet is still on screen would animate it in behind
+    /// the sheet and most of it would be missed.
+    @State private var pendingConfirmation: String?
+    @State private var confirmation: String?
+
     enum Tab: String, CaseIterable, Identifiable {
         case bills, balances
         var id: String { rawValue }
@@ -57,8 +63,18 @@ struct GroupDetailView: View {
             }
         }
         .sheet(isPresented: $showingAddBill) {
-            AddBillChooser(group: group)
+            // Promoted here, once the sheet has gone, so the toast animates
+            // onto the group rather than underneath a dismissing sheet.
+            if let message = pendingConfirmation {
+                confirmation = message
+                pendingConfirmation = nil
+            }
+        } content: {
+            AddBillChooser(group: group) { message in
+                pendingConfirmation = message
+            }
         }
+        .toast(message: $confirmation)
         .task {
             // Push whatever happened offline, then watch for other members'
             // changes while this group is on screen.

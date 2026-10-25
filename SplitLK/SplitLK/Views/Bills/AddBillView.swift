@@ -8,20 +8,33 @@ struct AddBillView: View {
     @State private var model: BillEditorViewModel
     @State private var saveError: String?
 
-    init(group: CDGroup, prefilled: BillEditorViewModel? = nil) {
+    /// Called with a short confirmation once the bill is in the store. The
+    /// view does not dismiss itself, because it sits inside a pushed stack
+    /// and `dismiss()` here only pops back to the chooser — the caller owns
+    /// the sheet and is the one that can close it.
+    private let onSaved: ((String) -> Void)?
+
+    init(group: CDGroup,
+         prefilled: BillEditorViewModel? = nil,
+         onSaved: ((String) -> Void)? = nil) {
         _model = State(initialValue: prefilled ?? BillEditorViewModel(group: group))
+        self.onSaved = onSaved
     }
 
     var body: some View {
-        if !model.reconciles, let scanned = model.scannedTotal {
-            Section {
-                Label("Items total \(Money.format(model.total)) but the receipt shows \(Money.format(scanned)). Check for missing or misread items.",
-                      systemImage: "exclamationmark.triangle.fill")
-                    .font(.footnote)
-                    .foregroundStyle(.orange)
-            }
-        }
         Form {
+            // Inside the Form, not above it. A Section outside a Form has no
+            // container to style it, so this warning used to render as bare
+            // text wedged above the first row.
+            if !model.reconciles, let scanned = model.scannedTotal {
+                Section {
+                    Label("Items total \(Money.format(model.total)) but the receipt shows \(Money.format(scanned)). Check for missing or misread items.",
+                          systemImage: "exclamationmark.triangle.fill")
+                        .font(.footnote)
+                        .foregroundStyle(.orange)
+                }
+            }
+
             detailsSection
             itemsSection
             chargesSection
@@ -129,8 +142,15 @@ struct AddBillView: View {
 
     private func save() {
         do {
-            try model.save(in: context)
-            dismiss()
+            let bill = try model.save(in: context)
+            let name = bill.displayMerchant
+            let message = "\(name) added · \(Money.format(bill.totalAmount))"
+
+            if let onSaved {
+                onSaved(message)
+            } else {
+                dismiss()
+            }
         } catch {
             context.rollback()
             saveError = error.localizedDescription
