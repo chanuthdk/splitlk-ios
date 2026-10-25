@@ -9,6 +9,7 @@ struct ScanReceiptView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var pickerItem: PhotosPickerItem?
+    @State private var request: ScanRequest?
     @State private var stage: Stage = .choosing
     @State private var preview: UIImage?
 
@@ -16,6 +17,15 @@ struct ScanReceiptView: View {
         case choosing
         case working(String)
         case failed(String)
+    }
+
+    /// Wraps the chosen photo with a fresh id so picking the *same* photo
+    /// again still counts as a new request. Keying the work on the picker
+    /// item alone meant a failed scan could not be retried on that photo,
+    /// because the item compared equal and the task never re-ran.
+    private struct ScanRequest: Equatable {
+        let id = UUID()
+        let item: PhotosPickerItem
     }
 
     var body: some View {
@@ -86,19 +96,33 @@ struct ScanReceiptView: View {
         }
         .onChange(of: pickerItem) { _, item in
             guard let item else { return }
-            Task { await handle(item) }
+            request = ScanRequest(item: item)
+        }
+        // A `.task` tied to the request rather than a free-standing `Task`,
+        // so leaving this screen cancels the scan. Previously the work
+        // carried on after Cancel and then called back, which pushed the
+        // bill editor for a receipt the user had already abandoned.
+        .task(id: request) {
+            guard let request else { return }
+            await handle(request.item)
         }
     }
 
+    /// Explicitly main-actor: it writes view state, and the closure `.task`
+    /// takes is sendable rather than isolated, so without this the updates
+    /// would land off the main actor.
+    @MainActor
     private func handle(_ item: PhotosPickerItem) async {
         stage = .working("Loading photo…")
 
         guard let data = try? await item.loadTransferable(type: Data.self),
               let image = UIImage(data: data) else {
+            guard !Task.isCancelled else { return }
             stage = .failed("That file couldn't be opened as an image.")
             return
         }
 
+        guard !Task.isCancelled else { return }
         preview = image
         stage = .working("Reading receipt…")
 
@@ -106,14 +130,24 @@ struct ScanReceiptView: View {
             let result = try await ReceiptScanner.scan(image)
             let parsed = ReceiptParser.parse(lines: result.lines)
 
+            // Cancellation is cooperative and the Vision work does not check
+            // for it, so the result can arrive after the screen has gone.
+            // Acting on it here is what used to add an abandoned bill.
+            guard !Task.isCancelled else { return }
+
             guard !parsed.items.isEmpty else {
                 stage = .failed("No items could be read. Try a sharper photo, or enter the bill manually.")
                 return
             }
 
             preview = result.correctedImage
+            // Reset before handing over, so going back from the editor shows
+            // the scanned receipt and a "Try Another Photo" button rather
+            // than a spinner that can never finish.
+            stage = .choosing
             onParsed(result, parsed)
         } catch {
+            guard !Task.isCancelled else { return }
             stage = .failed(error.localizedDescription)
         }
     }
