@@ -104,7 +104,7 @@ enum SyncMapper {
         let members = group.memberList.map { member in
             MemberDTO(id: member.memberID.uuidString,
                       name: member.displayName,
-                      colorHex: member.colorHex ?? "4F46E5",
+                      colorHex: member.colorHex ?? GroupStyle.defaultColorHex,
                       linkedUid: member.linkedUid)
         }
 

@@ -16,8 +16,13 @@ final class GroupEditorViewModel {
     }
 
     /// Distinct hues so members stay tellable apart in avatars and charts.
-    static let palette = ["4F46E5", "16A34A", "D97706", "DC2626",
-                          "0891B2", "7C3AED", "DB2777", "65A30D"]
+    ///
+    /// The earlier set had a saturated green and red in it, which sat next to
+    /// the green and red that mean "is owed" and "owes" — an avatar is not a
+    /// balance, so it must not borrow their colours. These are the muted
+    /// family, ordered so the first few are furthest apart.
+    static let palette = ["1F5FD0", "8A6A32", "3C6B78", "5E4E73",
+                          "8E4654", "44683C", "17171A", "5E5E58"]
 
     var name: String = ""
     var currencyCode: String = "LKR"

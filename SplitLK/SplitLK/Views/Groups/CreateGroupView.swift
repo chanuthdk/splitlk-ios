@@ -221,14 +221,14 @@ struct CreateGroupView: View {
     /// would otherwise announce twenty identical unlabelled buttons.
     private func colorName(for hex: String) -> String {
         switch hex {
-        case "4F46E5": return "Indigo"
-        case "0891B2": return "Teal"
-        case "16A34A": return "Green"
-        case "D97706": return "Amber"
-        case "DC2626": return "Red"
-        case "DB2777": return "Pink"
-        case "7C3AED": return "Purple"
-        default:       return "Slate"
+        case "17171A": return "Ink"
+        case "3C6B78": return "Slate blue"
+        case "44683C": return "Palm green"
+        case "8A6A32": return "Turmeric"
+        case "8E4654": return "Madder red"
+        case "5E4E73": return "Aubergine"
+        case "1F5FD0": return "Stamp blue"
+        default:       return "Stone"
         }
     }
 

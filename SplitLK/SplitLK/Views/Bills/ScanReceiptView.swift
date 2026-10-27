@@ -45,7 +45,7 @@ struct ScanReceiptView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                     .overlay(
                         RoundedRectangle(cornerRadius: 12)
-                            .strokeBorder(Color(hex: "4F46E5"), lineWidth: 2)
+                            .strokeBorder(Palette.stamp, lineWidth: 2)
                     )
             } else {
                 Image(systemName: "doc.text.viewfinder")

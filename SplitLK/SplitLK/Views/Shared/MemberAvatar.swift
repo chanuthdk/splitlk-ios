@@ -6,7 +6,7 @@ struct MemberAvatar: View {
 
     var body: some View {
         Circle()
-            .fill(Color(hex: member.colorHex ?? "4F46E5"))
+            .fill(Color(hex: member.colorHex ?? GroupStyle.defaultColorHex))
             .frame(width: size, height: size)
             .overlay(
                 Text(member.initials)

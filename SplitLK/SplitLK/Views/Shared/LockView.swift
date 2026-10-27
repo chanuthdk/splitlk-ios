@@ -9,7 +9,7 @@ struct LockView: View {
 
             Image(systemName: "lock.shield.fill")
                 .font(.system(size: 52))
-                .foregroundStyle(Color(hex: "4F46E5"))
+                .foregroundStyle(Palette.stamp)
 
             Text("SplitLK")
                 .font(.largeTitle.bold())

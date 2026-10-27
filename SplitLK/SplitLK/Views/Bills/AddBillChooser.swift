@@ -131,7 +131,7 @@ struct AddBillChooser: View {
                     .font(.system(size: 22))
                     .foregroundStyle(.white)
                     .frame(width: 46, height: 46)
-                    .background(RoundedRectangle(cornerRadius: 12).fill(Color(hex: "4F46E5")))
+                    .background(RoundedRectangle(cornerRadius: 12).fill(Palette.stamp))
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title).font(.headline)

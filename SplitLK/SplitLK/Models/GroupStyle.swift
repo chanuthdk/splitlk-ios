@@ -7,13 +7,15 @@ import SwiftUI
 /// arrived from a device running a different build.
 enum GroupStyle {
 
-    static let defaultColorHex = "4F46E5"
+    static let defaultColorHex = "17171A"
     static let defaultIconName = "person.3.fill"
 
-    /// Deliberately distinct hues rather than shades of one colour, so a row
-    /// is identifiable at a glance and in greyscale the icons still differ.
-    static let colors = ["4F46E5", "0891B2", "16A34A", "D97706",
-                         "DC2626", "DB2777", "7C3AED", "475569"]
+    /// Muted and roughly equal in weight, so no group shouts over the others
+    /// and none of them competes with the green and red that carry balance
+    /// direction. Distinct in hue rather than in brightness, so the rows stay
+    /// tellable apart in greyscale too.
+    static let colors = ["17171A", "3C6B78", "44683C", "8A6A32",
+                         "8E4654", "5E4E73", "1F5FD0", "5E5E58"]
 
     /// Occasions people actually split money for. Each one has to read at
     /// 16pt inside a 40pt circle, which rules out the more detailed symbols.
@@ -33,16 +35,19 @@ enum GroupStyle {
 
 extension SpendingCategory {
     /// Each category gets its own colour so a bill list is scannable without
-    /// reading it. The hues match the group palette, so the two sets of
-    /// colours look like they belong to the same app.
+    /// reading it, drawn from the same muted family as the group palette.
+    ///
+    /// Deliberately held back: on a receipt the amounts are what matter, and
+    /// six saturated circles down the left edge would outshout them. These
+    /// read as printed ink rather than as highlighting.
     var color: Color {
         switch self {
-        case .food:          return Color(hex: "D97706")
-        case .drinks:        return Color(hex: "0891B2")
-        case .transport:     return Color(hex: "16A34A")
-        case .groceries:     return Color(hex: "7C3AED")
-        case .accommodation: return Color(hex: "DB2777")
-        case .other:         return Color(hex: "475569")
+        case .food:          return Color(hex: "8A6A32")   // turmeric
+        case .drinks:        return Color(hex: "3C6B78")   // slate blue
+        case .transport:     return Color(hex: "44683C")   // palm
+        case .groceries:     return Color(hex: "5E4E73")   // aubergine
+        case .accommodation: return Color(hex: "8E4654")   // madder
+        case .other:         return Color(hex: "5E5E58")   // stone
         }
     }
 }

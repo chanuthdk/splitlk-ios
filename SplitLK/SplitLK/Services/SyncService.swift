@@ -204,7 +204,7 @@ final class SyncService {
         try groupRef.collection("members").document(member.memberID.uuidString)
             .setData(from: MemberDTO(id: member.memberID.uuidString,
                                      name: member.displayName,
-                                     colorHex: member.colorHex ?? "4F46E5",
+                                     colorHex: member.colorHex ?? GroupStyle.defaultColorHex,
                                      linkedUid: uid),
                      merge: true)
     }

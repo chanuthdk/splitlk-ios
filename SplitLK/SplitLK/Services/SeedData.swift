@@ -16,13 +16,14 @@ enum SeedData {
         group.currencyCode = "LKR"
         group.createdAt = Date()
         group.isArchived = false
-        group.colorHex = "0891B2"
+        group.colorHex = "3C6B78"
         group.iconName = "beach.umbrella.fill"
 
-        let me = member(named: "Chanuth", color: "4F46E5", isMe: true, in: context)
-        let nimal = member(named: "Nimal", color: "16A34A", isMe: false, in: context)
-        let kasun = member(named: "Kasun", color: "D97706", isMe: false, in: context)
-        let dilini = member(named: "Dilini", color: "DC2626", isMe: false, in: context)
+        let palette = GroupEditorViewModel.palette
+        let me = member(named: "Chanuth", color: palette[0], isMe: true, in: context)
+        let nimal = member(named: "Nimal", color: palette[1], isMe: false, in: context)
+        let kasun = member(named: "Kasun", color: palette[2], isMe: false, in: context)
+        let dilini = member(named: "Dilini", color: palette[3], isMe: false, in: context)
 
         for person in [me, nimal, kasun, dilini] {
             person.group = group
