@@ -10,6 +10,11 @@ struct ScanReceiptView: View {
 
     @State private var pickerItem: PhotosPickerItem?
     @State private var request: ScanRequest?
+    /// The request already acted on. A `.task` restarts when its view appears
+    /// again, and this screen reappears every time the user comes back from
+    /// the bill editor — without this, coming back re-ran the last scan and
+    /// pushed the editor a second time on its own.
+    @State private var handledRequestID: UUID?
     @State private var stage: Stage = .choosing
     @State private var preview: UIImage?
 
@@ -103,9 +108,25 @@ struct ScanReceiptView: View {
         // carried on after Cancel and then called back, which pushed the
         // bill editor for a receipt the user had already abandoned.
         .task(id: request) {
-            guard let request else { return }
-            await handle(request.item)
+            await runPendingScan()
         }
+    }
+
+    /// Runs the newest request at most once, whatever makes the task start.
+    @MainActor
+    private func runPendingScan() async {
+        guard let request else { return }
+
+        guard request.id != handledRequestID else {
+            // Back on a scan that was abandoned part-way. Its task was
+            // cancelled and will not resume, so the screen is put back into a
+            // usable state instead of showing a spinner that never finishes.
+            if case .working = stage { stage = .choosing }
+            return
+        }
+
+        handledRequestID = request.id
+        await handle(request.item)
     }
 
     /// Explicitly main-actor: it writes view state, and the closure `.task`
