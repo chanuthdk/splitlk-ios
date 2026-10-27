@@ -10,14 +10,41 @@ struct AddBillChooser: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var path: [Route] = []
-    @State private var prefilled: BillEditorViewModel?
-    @State private var duplicate: DuplicateDetector.Match?
-    @State private var scannedImage: UIImage?
 
+    /// The scanned bill travels *inside* the route rather than in a separate
+    /// piece of state beside it.
+    ///
+    /// It used to be held in its own `@State` that was set just before the
+    /// push. That is two state changes, and SwiftUI does not promise to apply
+    /// them in one update — so the editor could be built while the scanned
+    /// draft was still nil and open with no items, which is exactly what
+    /// happened. Carrying the payload in the route makes the push a single
+    /// change, and the destination cannot be built without it.
     enum Route: Hashable {
         case scan
-        case duplicate(UUID)   // identity so a second scan rebuilds the screen
-        case manual(UUID)
+        case duplicate(DuplicateRoute)
+        case manual(ManualRoute)
+    }
+
+    /// Identity is the id alone, so a second scan of the same receipt still
+    /// counts as a new screen. `BillEditorViewModel` is a reference type and
+    /// deliberately not part of the comparison.
+    struct ManualRoute: Hashable {
+        let id = UUID()
+        let prefilled: BillEditorViewModel?
+
+        static func == (lhs: Self, rhs: Self) -> Bool { lhs.id == rhs.id }
+        func hash(into hasher: inout Hasher) { hasher.combine(id) }
+    }
+
+    struct DuplicateRoute: Hashable {
+        let id = UUID()
+        let match: DuplicateDetector.Match
+        let image: UIImage?
+        let prefilled: BillEditorViewModel
+
+        static func == (lhs: Self, rhs: Self) -> Bool { lhs.id == rhs.id }
+        func hash(into hasher: inout Hasher) { hasher.combine(id) }
     }
 
     var body: some View {
@@ -32,8 +59,7 @@ struct AddBillChooser: View {
                 optionCard(title: "Enter Manually",
                            subtitle: "Type the bill yourself",
                            systemImage: "keyboard") {
-                    prefilled = nil
-                    path.append(.manual(UUID()))
+                    path.append(.manual(ManualRoute(prefilled: nil)))
                 }
 
                 Spacer()
@@ -53,19 +79,19 @@ struct AddBillChooser: View {
                         handleScan(scan, parsed)
                     }
 
-                case .duplicate:
-                    if let duplicate {
-                        DuplicateWarningView(
-                            match: duplicate,
-                            newImage: scannedImage,
-                            onContinue: { path.append(.manual(UUID())) },
-                            onCancel: { dismiss() }
-                        )
-                        .navigationBarBackButtonHidden()
-                    }
+                case .duplicate(let route):
+                    DuplicateWarningView(
+                        match: route.match,
+                        newImage: route.image,
+                        onContinue: {
+                            path.append(.manual(ManualRoute(prefilled: route.prefilled)))
+                        },
+                        onCancel: { dismiss() }
+                    )
+                    .navigationBarBackButtonHidden()
 
-                case .manual:
-                    AddBillView(group: group, prefilled: prefilled) { message in
+                case .manual(let route):
+                    AddBillView(group: group, prefilled: route.prefilled) { message in
                         onSaved?(message)
                         dismiss()
                     }
@@ -83,15 +109,13 @@ struct AddBillChooser: View {
                             _ parsed: ReceiptParser.ParsedReceipt) {
         let model = BillEditorViewModel(group: group)
         model.apply(parsed, scan: scan)
-        prefilled = model
-        scannedImage = scan.correctedImage
 
         if let match = DuplicateDetector.findDuplicate(of: scan.featurePrint, in: group) {
-            duplicate = match
-            path.append(.duplicate(UUID()))
+            path.append(.duplicate(DuplicateRoute(match: match,
+                                                  image: scan.correctedImage,
+                                                  prefilled: model)))
         } else {
-            duplicate = nil
-            path.append(.manual(UUID()))
+            path.append(.manual(ManualRoute(prefilled: model)))
         }
     }
 
