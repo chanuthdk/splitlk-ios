@@ -31,11 +31,25 @@ struct BalanceProvider: TimelineProvider {
     }
 }
 
+/// The widget keeps its own copy of the two balance colours, for the same
+/// reason it formats its own amounts: the extension does not link the app's
+/// model layer. The values match `Palette.owed` and `Palette.owing`.
+private enum WidgetPalette {
+    static let owed = Color(.sRGB, red: 0x0F / 255, green: 0x6F / 255, blue: 0x4C / 255)
+    static let owedDark = Color(.sRGB, red: 0x3F / 255, green: 0xA8 / 255, blue: 0x7C / 255)
+    static let owing = Color(.sRGB, red: 0xB2 / 255, green: 0x3A / 255, blue: 0x2C / 255)
+    static let owingDark = Color(.sRGB, red: 0xD9 / 255, green: 0x6A / 255, blue: 0x5C / 255)
+}
+
 // MARK: - Views
 
 struct SplitLKWidgetEntryView: View {
     @Environment(\.widgetFamily) private var family
+    @Environment(\.colorScheme) private var scheme
     var entry: BalanceEntry
+
+    private var owed: Color { scheme == .dark ? WidgetPalette.owedDark : WidgetPalette.owed }
+    private var owing: Color { scheme == .dark ? WidgetPalette.owingDark : WidgetPalette.owing }
 
     var body: some View {
         switch family {
@@ -61,10 +75,10 @@ struct SplitLKWidgetEntryView: View {
             } else {
                 amountBlock(title: "You're owed",
                             amount: entry.snapshot.owedToMe,
-                            tint: .green)
+                            tint: owed)
                 amountBlock(title: "You owe",
                             amount: entry.snapshot.iOwe,
-                            tint: .red)
+                            tint: owing)
             }
 
             Spacer(minLength: 0)
@@ -78,7 +92,7 @@ struct SplitLKWidgetEntryView: View {
                 .font(.caption2)
                 .foregroundStyle(.secondary)
             Text(format(amount))
-                .font(.subheadline.weight(.semibold))
+                .font(.subheadline.weight(.semibold).monospacedDigit())
                 .foregroundStyle(amount == 0 ? .secondary : tint)
                 .minimumScaleFactor(0.7)
                 .lineLimit(1)
@@ -120,7 +134,7 @@ struct SplitLKWidgetEntryView: View {
                         Spacer(minLength: 8)
 
                         Text(label(for: group.balance))
-                            .font(.footnote.weight(.medium))
+                            .font(.footnote.weight(.medium).monospacedDigit())
                             .foregroundStyle(tint(for: group.balance))
                             .lineLimit(1)
                     }
@@ -150,7 +164,7 @@ struct SplitLKWidgetEntryView: View {
 
     private func tint(for balance: Decimal) -> Color {
         if balance == 0 { return .secondary }
-        return balance > 0 ? .green : .red
+        return balance > 0 ? owed : owing
     }
 
     private func accessibleLabel(for group: BalanceSnapshot.GroupSummary) -> String {

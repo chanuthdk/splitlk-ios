@@ -8,12 +8,14 @@ struct ToastView: View {
     let message: String
 
     var body: some View {
+        // Ink rather than green: in this app green means "you're owed", and a
+        // green confirmation reads for a moment as a balance.
         Label(message, systemImage: "checkmark.circle.fill")
             .font(.subheadline.weight(.medium))
-            .foregroundStyle(.white)
+            .foregroundStyle(Palette.card)
             .padding(.horizontal, 16)
             .padding(.vertical, 11)
-            .background(Capsule().fill(Color.green.gradient))
+            .background(Capsule().fill(Palette.ink))
             .shadow(color: .black.opacity(0.18), radius: 8, y: 3)
             .padding(.horizontal, 20)
     }

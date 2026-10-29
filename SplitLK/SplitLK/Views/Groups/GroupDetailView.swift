@@ -113,6 +113,8 @@ struct GroupDetailView: View {
             }
         }
         .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .background(Palette.paper)
     }
 
     /// Deleting a bill cascades to its items and shares through the model's
@@ -146,6 +148,8 @@ struct GroupDetailView: View {
             }
         }
         .listStyle(.insetGrouped)
+        .scrollContentBackground(.hidden)
+        .background(Palette.paper)
         .safeAreaInset(edge: .bottom) {
             Button {
                 showingSettleUp = true
@@ -184,7 +188,7 @@ struct BalanceRow: View {
             Spacer()
 
             Text(amount == 0 ? "Settled" : Money.format(abs(amount)))
-                .font(.subheadline.weight(.medium))
+                .font(.money(.subheadline))
                 .foregroundStyle(tint)
                 // Rolls rather than cuts when a bill or settlement moves the
                 // figure, which makes it obvious that this row is the one
@@ -205,8 +209,8 @@ struct BalanceRow: View {
     }
 
     private var tint: Color {
-        if amount == 0 { return .secondary }
-        return amount > 0 ? .green : .red
+        if amount == 0 { return Palette.inkSoft }
+        return amount > 0 ? Palette.owed : Palette.owing
     }
 
     private var accessibleLabel: String {

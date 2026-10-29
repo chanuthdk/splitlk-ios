@@ -24,6 +24,8 @@ struct InsightsView: View {
                         topCategoriesSection
                     }
                     .listStyle(.insetGrouped)
+                    .scrollContentBackground(.hidden)
+                    .background(Palette.paper)
                 }
             }
             .navigationTitle("Insights")
@@ -36,7 +38,7 @@ struct InsightsView: View {
         Section("By Category") {
             VStack(alignment: .leading, spacing: 12) {
                 Text(Money.format(total))
-                    .font(.title2.bold())
+                    .font(.money(.title2, weight: .bold))
                     .contentTransition(.numericText())
                     .animation(.snappy, value: total)
                 Text("your share across \(groups.count) group\(groups.count == 1 ? "" : "s")")
@@ -84,8 +86,8 @@ struct InsightsView: View {
                         x: .value("Month", entry.label),
                         y: .value("Amount", (entry.amount as NSDecimalNumber).doubleValue)
                     )
-                    .cornerRadius(4)
-                    .foregroundStyle(Color(hex: "4F46E5"))
+                    .cornerRadius(2)
+                    .foregroundStyle(Palette.ink)
                 }
                 .frame(height: 160)
                 .chartYAxis {
@@ -116,11 +118,11 @@ struct InsightsView: View {
 
                     VStack(alignment: .trailing, spacing: 1) {
                         Text(Money.format(entry.amount))
-                            .font(.subheadline.weight(.medium))
+                            .font(.money(.subheadline))
                         if total > 0 {
                             Text("\(percent(entry.amount))%")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .font(.caption.monospacedDigit())
+                                .foregroundStyle(Palette.inkSoft)
                         }
                     }
                 }

@@ -41,6 +41,8 @@ struct AddBillView: View {
             splitSection
             totalsSection
         }
+        .scrollContentBackground(.hidden)
+        .background(Palette.paper)
         .navigationTitle("Add Bill")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -120,22 +122,57 @@ struct AddBillView: View {
         }
     }
 
+    /// Laid out the way the foot of a printed bill is: the figures that make
+    /// up the total, a tear line, the total itself, then who owes what. The
+    /// amounts are tabular so they line up on the decimal down the column.
     private var totalsSection: some View {
         Section("Summary") {
-            LabeledContent("Subtotal", value: Money.format(model.itemsSubtotal))
-            LabeledContent("Total", value: Money.format(model.total))
-                .font(.headline)
+            VStack(spacing: 9) {
+                figureRow("Subtotal", model.itemsSubtotal)
+
+                if model.serviceCharge > 0 {
+                    figureRow("Service charge", model.serviceCharge)
+                }
+                if model.tax > 0 {
+                    figureRow("Tax", model.tax)
+                }
+
+                TearLine()
+                    .padding(.vertical, 2)
+
+                figureRow("Total", model.total, emphasised: true)
+            }
+            .padding(.vertical, 4)
 
             let shares = model.previewShares()
             ForEach(model.group.memberList, id: \.memberID) { member in
                 let amount = shares[member.memberID] ?? 0
                 if amount > 0 {
-                    LabeledContent(member.displayName, value: Money.format(amount))
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                    LabeledContent(member.displayName) {
+                        Text(Money.format(amount))
+                            .font(.money(.subheadline))
+                    }
+                    .font(.subheadline)
+                    .foregroundStyle(Palette.inkSoft)
                 }
             }
         }
+    }
+
+    private func figureRow(_ label: String, _ amount: Decimal, emphasised: Bool = false) -> some View {
+        HStack {
+            Text(label)
+                .font(emphasised ? .headline : .subheadline)
+                .foregroundStyle(emphasised ? Palette.ink : Palette.inkSoft)
+            Spacer(minLength: 12)
+            Text(Money.format(amount))
+                .font(.money(emphasised ? .headline : .subheadline,
+                             weight: emphasised ? .semibold : .regular))
+                .foregroundStyle(emphasised ? Palette.ink : Palette.inkSoft)
+                .contentTransition(.numericText())
+                .animation(.snappy, value: amount)
+        }
+        .accessibilityElement(children: .combine)
     }
 
     // MARK: - Actions
@@ -196,7 +233,7 @@ struct ItemEditorRow: View {
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 5)
                                 .background(
-                                    Capsule().fill(isOn ? Color(hex: "4F46E5") : Color(.systemGray5))
+                                    Capsule().fill(isOn ? Palette.stamp : Color(.systemGray5))
                                 )
                                 .foregroundStyle(isOn ? .white : .primary)
                         }

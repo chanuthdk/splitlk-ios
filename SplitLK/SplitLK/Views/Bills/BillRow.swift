@@ -25,7 +25,7 @@ struct BillRow: View {
             Spacer()
 
             Text(Money.format(bill.totalAmount))
-                .font(.subheadline.weight(.medium))
+                .font(.money(.subheadline))
         }
         .padding(.vertical, 4)
         .accessibilityElement(children: .combine)

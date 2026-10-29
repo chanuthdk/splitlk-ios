@@ -93,6 +93,11 @@ struct GroupsView: View {
             }
         }
         .listStyle(.insetGrouped)
+        // The system's grouped grey is replaced by the paper token, which is
+        // what carries the receipt direction. Without this the palette only
+        // shows up in the small details and the screen still reads as stock.
+        .scrollContentBackground(.hidden)
+        .background(Palette.paper)
     }
 
     // MARK: - Detail
@@ -116,15 +121,19 @@ struct GroupsView: View {
     /// match, with the two halves it is made of underneath. The previous
     /// version showed owed and owe as equal columns, which left the reader
     /// to do the subtraction.
+    /// The total at the foot of a bill: the one figure, then a tear line, then
+    /// the two amounts it was worked out from. Colour is carried by the figure
+    /// itself rather than by a tinted panel, so the card stays paper and the
+    /// number is the only thing competing for attention.
     private var summaryCard: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 2) {
                 Text(netTitle)
                     .font(.footnote.weight(.medium))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Palette.inkSoft)
 
                 Text(Money.format(abs(netBalance)))
-                    .font(.system(size: 34, weight: .semibold, design: .rounded))
+                    .font(.money(size: 34, weight: .semibold))
                     .foregroundStyle(netTint)
                     .contentTransition(.numericText())
                     .animation(.snappy, value: netBalance)
@@ -133,9 +142,11 @@ struct GroupsView: View {
             }
 
             if totalOwedToMe > 0 || totalIOwe > 0 {
+                TearLine()
+
                 HStack(spacing: 20) {
-                    supportingFigure(title: "Owed to you", amount: totalOwedToMe, tint: .green)
-                    supportingFigure(title: "You owe", amount: totalIOwe, tint: .red)
+                    supportingFigure(title: "Owed to you", amount: totalOwedToMe, tint: Palette.owed)
+                    supportingFigure(title: "You owe", amount: totalIOwe, tint: Palette.owing)
                     Spacer(minLength: 0)
                 }
             }
@@ -143,13 +154,12 @@ struct GroupsView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(16)
         .background {
-            RoundedRectangle(cornerRadius: 16)
-                // Tinted by direction, so being up or down is legible before
-                // any of the text is read. Kept faint so the figure stays the
-                // brightest thing in the card.
-                .fill(LinearGradient(colors: [netTint.opacity(0.16), netTint.opacity(0.04)],
-                                     startPoint: .topLeading,
-                                     endPoint: .bottomTrailing))
+            RoundedRectangle(cornerRadius: 14)
+                .fill(Palette.card)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 14)
+                        .strokeBorder(Palette.rule, lineWidth: 1)
+                }
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibleSummary)
@@ -159,10 +169,10 @@ struct GroupsView: View {
         VStack(alignment: .leading, spacing: 1) {
             Text(title)
                 .font(.caption2)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Palette.inkSoft)
             Text(Money.format(amount))
-                .font(.subheadline.weight(.medium))
-                .foregroundStyle(amount == 0 ? .secondary : tint)
+                .font(.money(.subheadline))
+                .foregroundStyle(amount == 0 ? Palette.inkSoft : tint)
                 .contentTransition(.numericText())
                 .animation(.snappy, value: amount)
         }
@@ -177,9 +187,9 @@ struct GroupsView: View {
     }
 
     private var netTint: Color {
-        if netBalance > 0 { return .green }
-        if netBalance < 0 { return .red }
-        return .secondary
+        if netBalance > 0 { return Palette.owed }
+        if netBalance < 0 { return Palette.owing }
+        return Palette.inkSoft
     }
 
     private var accessibleSummary: String {
@@ -290,7 +300,7 @@ struct GroupRow: View {
             Spacer()
 
             Text(balanceLabel)
-                .font(.subheadline.weight(.medium))
+                .font(.money(.subheadline))
                 .foregroundStyle(balanceTint)
                 .contentTransition(.numericText())
                 .animation(.snappy, value: balance)
@@ -313,8 +323,8 @@ struct GroupRow: View {
     }
 
     private var balanceTint: Color {
-        if balance == 0 { return .secondary }
-        return balance > 0 ? .green : .red
+        if balance == 0 { return Palette.inkSoft }
+        return balance > 0 ? Palette.owed : Palette.owing
     }
 
     private var accessibleBalance: String {

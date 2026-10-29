@@ -98,8 +98,8 @@ struct TransferRow: View {
                 Text(description)
                     .font(.headline)
                 Text(Money.format(transfer.amount))
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(.money(.subheadline, weight: .regular))
+                    .foregroundStyle(Palette.inkSoft)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
