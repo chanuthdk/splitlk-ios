@@ -2,6 +2,10 @@ import SwiftUI
 import CoreData
 
 struct GroupsView: View {
+    /// A group id handed over by a tapped reminder. Cleared once opened, so
+    /// the same notification does not keep reselecting the group.
+    @Binding var groupToOpen: UUID?
+
     @Environment(\.managedObjectContext) private var context
 
     @FetchRequest(
@@ -32,6 +36,8 @@ struct GroupsView: View {
             BalanceService.refreshWidget(with: Array(groups))
         }
         .task { BalanceService.refreshWidget(with: Array(groups)) }
+        .onChange(of: groupToOpen) { _, id in openGroup(id) }
+        .task { openGroup(groupToOpen) }
         .sheet(isPresented: $showingCreateGroup) {
             CreateGroupView()
         }
@@ -234,6 +240,17 @@ struct GroupsView: View {
     }
 
     // MARK: - Actions
+
+    /// Selects the group a reminder pointed at, if it is still around. A
+    /// group deleted since the reminder was scheduled simply does nothing,
+    /// rather than leaving the request pending forever.
+    private func openGroup(_ id: UUID?) {
+        guard let id else { return }
+        if let match = groups.first(where: { $0.groupID == id }) {
+            selection = match
+        }
+        groupToOpen = nil
+    }
 
     private func archive(_ group: CDGroup) {
         if selection == group { selection = nil }
