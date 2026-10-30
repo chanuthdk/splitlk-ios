@@ -71,6 +71,13 @@
 			);
 			target = B78126DF3094AA14002CDFBE /* SplitLKWidgetExtension */;
 		};
+		B78127083094C4DF002CDFBE /* Exceptions for "SplitLK" folder in "SplitLKWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Services/WidgetBridge.swift,
+			);
+			target = B78126DF3094AA14002CDFBE /* SplitLKWidgetExtension */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -84,6 +91,9 @@
 		};
 		C078E244308F81B40047E30F /* SplitLK */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B78127083094C4DF002CDFBE /* Exceptions for "SplitLK" folder in "SplitLKWidgetExtension" target */,
+			);
 			path = SplitLK;
 			sourceTree = "<group>";
 		};
