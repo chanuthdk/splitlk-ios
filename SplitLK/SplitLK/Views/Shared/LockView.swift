@@ -26,9 +26,15 @@ struct LockView: View {
             }
 
             Button {
-                Task { await service.authenticate() }
+                Task {
+                    if service.biometricsBlocked {
+                        await service.authenticateWithPasscode()
+                    } else {
+                        await service.authenticate()
+                    }
+                }
             } label: {
-                Label("Unlock with \(service.biometryLabel)", systemImage: service.symbolName)
+                Label(service.actionTitle, systemImage: service.symbolName)
                     .font(.headline)
                     .frame(maxWidth: .infinity)
             }
@@ -37,8 +43,20 @@ struct LockView: View {
             .tint(Palette.stamp)
             .disabled(service.isAuthenticating)
             .padding(.horizontal, 32)
-            .padding(.bottom, 44)
+
+            // Offered only while biometrics are still the main route. Once
+            // they are blocked the button above is already the passcode.
+            if service.passcodeAvailable && !service.biometricsBlocked {
+                Button("Use passcode instead") {
+                    Task { await service.authenticateWithPasscode() }
+                }
+                .font(.subheadline)
+                .tint(Palette.stamp)
+                .disabled(service.isAuthenticating)
+                .padding(.top, 10)
+            }
         }
+        .padding(.bottom, 44)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Palette.paper)
         .animation(.snappy, value: service.state)

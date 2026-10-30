@@ -19,16 +19,21 @@ final class BiometricService {
     /// from the outside like Face ID had simply stopped working.
     private(set) var isAuthenticating = false
 
+    /// Whether a device passcode exists to fall back to. Checked rather than
+    /// assumed, because a fresh Simulator often has none.
+    private(set) var passcodeAvailable = false
+
+    /// Set when biometrics cannot run at all — locked out, not enrolled, or
+    /// unsupported. The lock screen then offers the passcode instead of
+    /// pretending Face ID is still an option.
+    private(set) var biometricsBlocked = false
+
     var isUnlocked: Bool {
         if case .unlocked = state { return true }
         return false
     }
 
     // MARK: - What the device offers
-    //
-    // Resolved once rather than on every access: each call built a fresh
-    // LAContext, and the label and the symbol were asking separately, so they
-    // could disagree with each other.
 
     /// Static so the LAContext is built once for the process, not once per
     /// caller. Settings reads the label from its body, which ran on every
@@ -51,7 +56,14 @@ final class BiometricService {
 
     var biometryLabel: String { Self.label }
 
+    /// What the unlock button should say right now. Once biometrics are
+    /// blocked, offering "Unlock with Face ID" is a lie.
+    var actionTitle: String {
+        biometricsBlocked ? "Enter Passcode" : "Unlock with \(Self.label)"
+    }
+
     var symbolName: String {
+        if biometricsBlocked { return "key.fill" }
         switch Self.biometry {
         case .faceID:  return "faceid"
         case .touchID: return "touchid"
@@ -63,6 +75,15 @@ final class BiometricService {
 
     // MARK: - Authenticating
 
+    /// Tries biometrics specifically.
+    ///
+    /// The earlier version asked for `.deviceOwnerAuthentication`, which lets
+    /// the system pick. That sounds accommodating and is the cause of the bug
+    /// it produced: when Face ID is locked out after repeated failures, the
+    /// system skips it silently and opens the passcode pad instead, so the
+    /// app appeared to ignore a perfectly good Face ID enrolment. Asking for
+    /// biometrics by name means a refusal is reported rather than papered
+    /// over, and the passcode becomes something the user chooses.
     func authenticate() async {
         guard !isAuthenticating, !isUnlocked else { return }
         isAuthenticating = true
@@ -71,30 +92,85 @@ final class BiometricService {
         let context = LAContext()
         context.localizedFallbackTitle = "Use Passcode"
 
-        // deviceOwnerAuthentication falls back to the passcode automatically,
-        // so a user whose biometrics fail is never locked out of their own data.
-        var error: NSError?
-        guard context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) else {
-            // No passcode set at all — there is nothing to authenticate
-            // against, so locking the user out would be worse than letting
-            // them in. This is the usual state of a fresh Simulator.
-            state = .unlocked
+        passcodeAvailable = LAContext()
+            .canEvaluatePolicy(.deviceOwnerAuthentication, error: nil)
+
+        var biometryError: NSError?
+        let canUseBiometrics = context.canEvaluatePolicy(
+            .deviceOwnerAuthenticationWithBiometrics,
+            error: &biometryError
+        )
+
+        guard canUseBiometrics else {
+            biometricsBlocked = true
+
+            // Nothing to authenticate against at all: no biometrics and no
+            // passcode. Locking the user out of their own data would be worse
+            // than letting them in.
+            guard passcodeAvailable else {
+                state = .unlocked
+                return
+            }
+
+            state = .failed(Self.message(for: biometryError))
             return
         }
 
+        biometricsBlocked = false
+        await evaluate(context,
+                       policy: .deviceOwnerAuthenticationWithBiometrics,
+                       allowingFallback: true)
+    }
+
+    /// The passcode route, taken only when the user asks for it or biometrics
+    /// have already refused.
+    func authenticateWithPasscode() async {
+        guard !isAuthenticating, !isUnlocked else { return }
+        isAuthenticating = true
+        defer { isAuthenticating = false }
+
+        let context = LAContext()
+        guard context.canEvaluatePolicy(.deviceOwnerAuthentication, error: nil) else {
+            state = .unlocked
+            return
+        }
+        await evaluate(context,
+                       policy: .deviceOwnerAuthentication,
+                       allowingFallback: false)
+    }
+
+    private func evaluate(_ context: LAContext,
+                          policy: LAPolicy,
+                          allowingFallback: Bool) async {
         do {
             let success = try await context.evaluatePolicy(
-                .deviceOwnerAuthentication,
+                policy,
                 localizedReason: "Unlock SplitLK to view your balances"
             )
             state = success ? .unlocked : .locked
         } catch {
-            state = Self.isCancellation(error) ? .locked : .failed(Self.message(for: error))
+            // The user tapped "Use Passcode" inside the biometric sheet.
+            // Honour it straight away rather than making them tap again.
+            if allowingFallback, (error as? LAError)?.code == .userFallback {
+                isAuthenticating = false
+                await authenticateWithPasscode()
+                return
+            }
+
+            if Self.isCancellation(error) {
+                state = .locked
+            } else {
+                if (error as? LAError)?.code == .biometryLockout {
+                    biometricsBlocked = true
+                }
+                state = .failed(Self.message(for: error))
+            }
         }
     }
 
     func lock() {
         state = .locked
+        biometricsBlocked = false
     }
 
     // MARK: - Errors
@@ -108,17 +184,20 @@ final class BiometricService {
 
     /// LocalAuthentication's own descriptions are written for developers.
     /// These say what the user can do about it.
-    private static func message(for error: Error) -> String {
+    private static func message(for error: Error?) -> String {
+        guard let error else { return "Authentication is unavailable." }
         guard let code = (error as? LAError)?.code else {
             return error.localizedDescription
         }
         switch code {
         case .biometryNotEnrolled:
-            return "No Face ID or Touch ID is set up on this device. Use your passcode instead."
+            return "\(label) isn't set up on this device. Use your passcode instead."
         case .biometryLockout:
-            return "Too many failed attempts. Unlock with your passcode to re-enable Face ID."
+            return "\(label) is locked after too many failed attempts. Enter your passcode to switch it back on."
         case .biometryNotAvailable:
-            return "Biometrics are unavailable on this device. Use your passcode instead."
+            return "\(label) is unavailable on this device. Use your passcode instead."
+        case .passcodeNotSet:
+            return "No device passcode is set, so there is nothing to unlock against."
         case .userFallback:
             return "Enter your device passcode to continue."
         case .authenticationFailed:
