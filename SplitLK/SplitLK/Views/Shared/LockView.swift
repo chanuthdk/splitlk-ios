@@ -44,22 +44,35 @@ struct LockView: View {
             .disabled(service.isAuthenticating)
             .padding(.horizontal, 32)
 
-            // Offered only while biometrics are still the main route. Once
-            // they are blocked the button above is already the passcode.
-            if service.passcodeAvailable && !service.biometricsBlocked {
-                Button("Use passcode instead") {
-                    Task { await service.authenticateWithPasscode() }
-                }
+            // Always offers the route the main button isn't taking, so
+            // neither one is a dead end. The retry re-checks what the device
+            // offers, which is what picks up Face ID being enrolled after the
+            // app has already given up on it.
+            secondaryRoute
                 .font(.subheadline)
                 .tint(Palette.stamp)
                 .disabled(service.isAuthenticating)
                 .padding(.top, 10)
-            }
         }
         .padding(.bottom, 44)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Palette.paper)
         .animation(.snappy, value: service.state)
+    }
+
+    @ViewBuilder
+    private var secondaryRoute: some View {
+        if service.biometricsBlocked {
+            if service.hasBiometricHardware {
+                Button("Try \(service.biometryLabel) again") {
+                    Task { await service.authenticate() }
+                }
+            }
+        } else if service.passcodeAvailable {
+            Button("Use passcode instead") {
+                Task { await service.authenticateWithPasscode() }
+            }
+        }
     }
 
     private var receipt: some View {

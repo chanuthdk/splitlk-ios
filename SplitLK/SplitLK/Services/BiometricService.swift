@@ -35,14 +35,30 @@ final class BiometricService {
 
     // MARK: - What the device offers
 
-    /// Static so the LAContext is built once for the process, not once per
-    /// caller. Settings reads the label from its body, which ran on every
-    /// redraw.
-    private static let biometry: LABiometryType = {
+    /// Cached rather than probed on demand, because Settings reads the label
+    /// from its body and that runs on every redraw. Refreshed whenever an
+    /// unlock is attempted, so enrolling Face ID while the app is installed
+    /// is picked up without a reinstall — a `let` here meant the first answer
+    /// of the process was the only one, and the button went on saying
+    /// "Passcode" after Face ID had been turned on.
+    private static var cachedBiometry: LABiometryType?
+
+    private static func probeBiometry() -> LABiometryType {
         let context = LAContext()
         _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
         return context.biometryType
-    }()
+    }
+
+    private static var biometry: LABiometryType {
+        if let cachedBiometry { return cachedBiometry }
+        let probed = probeBiometry()
+        cachedBiometry = probed
+        return probed
+    }
+
+    static func refreshBiometry() {
+        cachedBiometry = probeBiometry()
+    }
 
     /// What to call the unlock method in the interface. Static so a view can
     /// ask without holding the service.
@@ -55,6 +71,11 @@ final class BiometricService {
     }
 
     var biometryLabel: String { Self.label }
+
+    /// Whether offering to retry biometrics makes any sense. False on a
+    /// device with no Face ID or Touch ID at all, where "Try Passcode again"
+    /// would be a button that repeats what just happened.
+    var hasBiometricHardware: Bool { Self.biometry != .none }
 
     /// What the unlock button should say right now. Once biometrics are
     /// blocked, offering "Unlock with Face ID" is a lie.
@@ -91,6 +112,11 @@ final class BiometricService {
 
         let context = LAContext()
         context.localizedFallbackTitle = "Use Passcode"
+
+        // Re-read what the device offers, so enrolling Face ID between
+        // attempts takes effect on the next unlock rather than the next
+        // launch.
+        Self.refreshBiometry()
 
         passcodeAvailable = LAContext()
             .canEvaluatePolicy(.deviceOwnerAuthentication, error: nil)
